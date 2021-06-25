@@ -43,7 +43,7 @@ class inforClassAction extends Action
 			$shateuid = 'dept';
 			$shatename= '本部门';
 		}
-		m($this->post('tablename_postabc','',1))->update(array(
+		m($this->post('tablename_postabc'))->update(array(
 			'shateuid'	=> $shateuid,
 			'shatename'	=> $shatename,
 		), "`id` in($sid)");

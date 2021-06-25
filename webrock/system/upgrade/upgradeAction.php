@@ -312,7 +312,6 @@ $fcont = str_replace('
 			$sql = '';
 			foreach($farr as $k=>$rs){
 				$lx = $rs['type'];
-				$sql= '';
 				if($lx=='sy' && isset($rs['sycont'])){
 					$str = 'KEY `'.$rs['fields'].'` ('.$rs['sycont'].')';
 				}else{

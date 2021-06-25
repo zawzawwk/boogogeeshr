@@ -120,7 +120,6 @@ var panel= [{
 		me._aawin.show();
 		if(lx==1)me._form = me._aawin.child('rockform');
 		me._form.setmsg('');
-		me._form.setBtnhidden(false);
 		me._form.setVal('sid',sid);
 	}
 }];
