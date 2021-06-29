@@ -80,7 +80,7 @@ class setClassAction extends Action
 			$content = file_get_contents($path);
 		}
 		if($content==''){
-			$content = '<table width="100%" bordercolor="#000000" border="1"><tbody><tr><td width="15%" height="34" align="right">姓名：</td><td width="35%">{base_name}</td><td width="15%" align="right">部门：</td><td width="35%">{base_deptname}</td></tr><tr><td height="34" align="right">申请日期：</td><td>{dt}</td><td align="right">操作时间：</td><td>{optdt}</td></tr><tr><td height="34" align="right">说明：</td><td colspan="3">{explain}</td></tr><tr><td height="34" align="right">相关文件：</td><td colspan="3">{file_content}</td></tr></tbody></table>';
+			//$content = '<table width="100%" bordercolor="#000000" border="0"><tbody><tr><td width="15%" height="34" align="right" class="ys1">姓名：</td><td width="35%" class="ys2">{base_name}</td><td width="15%" class="ys1" align="right">部门：</td><td width="35%" class="ys2">{base_deptname}</td></tr><tr><td height="34" align="right" class="ys1">申请日期：</td><td class="ys2">{dt}</td><td align="right" class="ys1">操作时间：</td><td class="ys2">{optdt}</td></tr><tr><td height="34" align="right" class="ys1">说明：</td><td colspan="3" class="ys2">{explain}</td></tr><tr><td height="34" align="right" class="ys1">相关文件：</td><td colspan="3" class="ys2">{file_content}</td></tr></tbody></table>';
 		}
 		$this->smartydata['content'] = $content;
 	}

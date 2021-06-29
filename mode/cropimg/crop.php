@@ -53,8 +53,8 @@ if($action=='crop'){
 //上传头像
 if($action=='upimg'){
 	$rnd=rand(1000,9000);
-	$upimg	= c('upfile',true,'jpg|png|gif|jpeg','../../upload|'.date('Y-m').'',1);
-	
+	$upimg	= c('upfile',true);
+	$upimg->initupfile('jpg|png|gif|jpeg','../../upload|'.date('Y-m').'',1);
 	$upses=$upimg->up('upfileface');
 	if(is_array($upses)){
 		echo '<script>parent.scr.upcg("'.$upses['allfilename'].'")</script>';

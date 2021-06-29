@@ -17,6 +17,7 @@ class finsaveClassAction extends Action
 				'sort' 		=> $i,
 				'mid' 		=> $mid,
 			);
+			
 			$whee = "`id`='$sid'";
 			if($sid==0)$whee='';
 			if($arr['items'] != '' && $arr['startdt'] != ''){
@@ -25,7 +26,7 @@ class finsaveClassAction extends Action
 				$ids .= ','.$sid;
 			}
 		}
-		$db->delete("`id` not in($ids)");
+		$db->delete("`mid`='$mid' and `id` not in($ids)");
 	}
 	
 	public function getlastAjax()

@@ -176,4 +176,25 @@ class indexClassAction extends Action{
 		));
 		print_r($arr);
 	}
+	
+	
+	public function getmnumAjax()
+	{
+		$mnum	= $this->rock->request('mnum');
+		$leval	= (int)$this->rock->request('showlevel');
+		$rows	= $this->option->getmnum($mnum);
+		$arr 	= array();
+		foreach($rows as $k=>$rs){
+			$arr[] 	= $rs;
+			$num	= $rs['num'];
+			if(!$this->isempt($num) && $leval==2){
+				$rowss = $this->option->getmnum($num);
+				foreach($rowss as $k1=>$rs1){
+					$rs1['name'] = $rs1['name'];
+					$arr[] = $rs1;
+				}
+			}
+		}
+		echo json_encode($arr);
+	}
 }

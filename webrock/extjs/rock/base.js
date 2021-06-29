@@ -19,7 +19,7 @@ Ext.define('Ext.rock.optioncombo',{
 		var me	= this;
 		Ext.applyIf(this,{
 			defaultstore:[],valuefields:'name',displayfields:'name',loadstore:false,autoloadlist:false,
-			store:[['loading','加载中...']],fiststore:false
+			store:[['loading','加载中...']],fiststore:false,showlevel:1
 		});
 		me.store=me.store.concat(me.defaultstore);
 		me.on({
@@ -29,7 +29,7 @@ Ext.define('Ext.rock.optioncombo',{
 			select:this.select,
 			change:this.change
 		});
-		if(!me.url)me.url = js.getajaxurl('getmnum','index','',{mnum:this.optionmnum});
+		if(!me.url)me.url = js.getajaxurl('getmnum','index','',{mnum:this.optionmnum,showlevel:this.showlevel});
 		if(me.url=='company'){
 			me.url = js.getajaxurl('getcompanydata','dept','system');
 		}

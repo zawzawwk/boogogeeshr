@@ -66,7 +66,7 @@ final class rockClass
 		$val=$dev;
 		if(isset($_GET[$name]))$val=$_GET[$name];
 		if($this->isempt($val))$val=$dev;
-		return $this->jmuncode($val, $lx);
+		return $this->jmuncode($val, $lx, $name);
 	}
 	
 	public function post($name,$dev='', $lx=0)
@@ -74,7 +74,7 @@ final class rockClass
 		$val  = '';
 		if(isset($_POST[$name]))$val=$_POST[$name];		
 		if($this->isempt($val))$val=$dev;
-		return $this->jmuncode($val, $lx);
+		return $this->jmuncode($val, $lx, $name);
 	}
 	
 	public function request($name,$dev='', $lx=0)
@@ -82,22 +82,39 @@ final class rockClass
 		$val  = '';
 		if(isset($_REQUEST[$name]))$val=$_REQUEST[$name];		
 		if($this->isempt($val))$val=$dev;
-		return $this->jmuncode($val, $lx);
+		return $this->jmuncode($val, $lx, $name);
 	}
 	
-	public function jmuncode($s, $lx=0)
+	public function jmuncode($s, $lx=0, $na)
 	{
-		if(substr($s, 0, 7)=='rockjm_' || $lx == 1){
+		$jmbo = false;
+		if($lx==3)$jmbo = $this->isjm($s);
+		if(substr($s, 0, 7)=='rockjm_' || $lx == 1 || $jmbo){
 			$s = str_replace('rockjm_', '', $s);
 			$s = $this->jm->uncrypt($s);
-			if($lx == 1){
-				$a = explode('0', $s);$len=count($a);
-				if($len>1){$ls=(int)$a[$len-1];if($ls>=1&&$ls<=14)$s=$this->jm->uncrypt($s);}
+			if($lx==1){
+				$jmbo = $this->isjm($s);
+				if($jmbo)$s = $this->jm->uncrypt($s);
 			}
 		}
 		$s=str_replace("'", '&#39', $s);
 		if($lx==2)$s=str_replace(array('{','}'), array('[H1]','[H2]'), $s);
 		return $s;
+	}
+	
+	private function isjm($s)
+	{
+		$bo = false;
+		if(!$s)return $bo;
+		$bo = preg_match("/^([a-z]{2,3})0([a-z]{2,3})0([a-z]{2,3})0([a-z0])*([1-9]{1,2})$/", $s);
+		return $bo;
+		$a 	= explode('0', $s);
+		$len= count($a);
+		if($len>1){
+			$ls=(int)$a[$len-1];
+			if($ls>=1&&$ls<=14)$bo=true;
+		}
+		return $bo;
 	}
 	
 	public function savesession($arr)
@@ -378,9 +395,13 @@ final class rockClass
 	public function createtxt($path, $txt)
 	{
 		$path	= ''.ROOT_PATH.'/'.$path.'';
-		$file	= fopen($path,'w');  
-		fwrite($file,$txt);
-		fclose($file);
+		@$file	= fopen($path,'w');
+		$bo 	= false;
+		if($file){
+			$bo = fwrite($file,$txt);
+			fclose($file);
+		}
+		return $bo;
 	}
 	
 	public function stringformat($str, $arr=array())

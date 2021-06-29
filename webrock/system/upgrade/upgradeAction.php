@@ -4,6 +4,7 @@ class upgradeClassAction extends Action
 	private $randkeyup  = '';
 	private $updatekey 	= 'aHR0cDovLzEyNy4wLjAuMS9yb2Nrd2ViLw::';
 	private $updatekeys = 'aHR0cDovL3d3dy5yb2Nrb2EuY29tLw::';
+	private $errmsg		= '';
 	
 	public function initAction()
 	{
@@ -16,13 +17,14 @@ class upgradeClassAction extends Action
 	{
 		$url = $this->updatekey;
 		$url.= 'index.php?m=api&ajaxbool=true&a='.$act.'';
+		$url.= '&host='.$this->rock->jm->base64encode(HOST).'';
 		foreach($can as $k=>$v)$url.='&'.$k.'='.$v.'';
 		return $url;
 	}
 	
 	private function getmode($stype)
 	{
-		$cont = c('curl')->getfilecont($this->getupurl('mode', array('stype'=>0, 'stype'=>$stype)));
+		$cont = c('curl')->getfilecont($this->getupurl('mode', array('stype'=>$stype)));
 		$barr['totalCount'] = 0;
 		$rows	= array();
 		$yaz    = $waz = $mfmk = $sfmk = $dsj = 0;
@@ -108,7 +110,7 @@ class upgradeClassAction extends Action
 		$backarr['data'] = $data;
 		$backarr['mid']  = $mid;
 		$backarr['installkey'] = $installkey;
-		$backarr['modename'] = $this->post('namePost');
+		$backarr['modename']   = $this->post('namePost');
 		$this->backmsg($msg,'', $backarr);
 	}
 	
@@ -146,16 +148,6 @@ class upgradeClassAction extends Action
 				$msg = $arr['msg'];
 			}else{
 				$data= $arr['data'];
-				$bos = m('chargemode')->insert(array(
-					'modeid' => $mid,
-					'modename' => $modename,
-					'installdt'  => $this->now,
-					'updatedt'   => $updatedt,
-					'installkey' => $installkey,
-					'optname' => $this->adminname,
-					'ver'  => $data['ver']
-				));
-				if(!$bos)$msg='失败2';
 			}
 		}else{
 			$msg = '请求失败';
@@ -163,8 +155,28 @@ class upgradeClassAction extends Action
 		$this->backmsg($msg);
 	}
 	
+	public function finishAjax()
+	{
+		$modeid 	= $this->post('modeid');
+		$installkey = $this->post('installkey');
+		$modename 	= $this->post('modename');
+		$updatedt 	= $this->post('updatedt');
+		$ver 		= $this->post('ver');
+		m('chargemode')->insert(array(
+			'modeid' 	 => $modeid,
+			'modename' 	 => $modename,
+			'installdt'  => $this->now,
+			'updatedt'   => $updatedt,
+			'installkey' => $installkey,
+			'optname' 	 => $this->adminname,
+			'ver'  		 => $ver
+		));
+		$this->backmsg('');
+	}
+	
 	public function startinstalllaAjax()
 	{
+		$this->errmsg= '';
 		$fid 		= $this->post('fid');
 		$mid 		= $this->post('mid');
 		$updatedt 	= $this->post('updatedt');
@@ -189,7 +201,10 @@ class upgradeClassAction extends Action
 			}else{
 				$data = $arr['data'];
 				$bo = $this->execinstall($data);
-				if(!$bo)$msg='失败了1';
+				if(!$bo){
+					$msg = $this->errmsg;
+					if($msg=='')$msg ='失败了1';
+				}
 			}
 		}else{
 			$msg = '请求失败';
@@ -203,30 +218,12 @@ class upgradeClassAction extends Action
 		$filepath 	= $arr['filepath'];
 		$fcont 		= $arr['fcont'];
 		$bo 		= true;
+		$msg 		= '500错了';
 		if($fcont  != '')$fcont = $this->rock->jm->base64decode($fcont);
 		if($type==0){
-			$zpath	= explode('/', $filepath);
-			$len    = count($zpath);
-			$mkdir	= '';
-			for($i=0; $i<$len-1; $i++){
-				if(!$this->isempt($zpath[$i])){
-					$mkdir.='/'.$zpath[$i].'';
-					$wzdir = ROOT_PATH.''.$mkdir;
-					if(!is_dir($wzdir)){
-						mkdir($wzdir);
-					}
-				}
-			}
-			if($fcont!=''){
-				$path 	= ROOT_PATH.'/'.$filepath;
-				if($arr['isjm']=='1'){
-$fcont = str_replace('
-', '', $fcont);
-					$fcont = str_replace('	', '', $fcont);
-					$fcont = str_replace('<?php', '<?php ', $fcont);
-				}
-				$bo 	= file_put_contents($path, $fcont);
-			}
+			c('file')->createdir($filepath);
+			$bo 	= $this->rock->createtxt($filepath, $fcont);
+			if(!$bo)$msg='无法写入文件权限';
 		}
 		if($type==1){
 			$bo=$this->updatemenu($fcont);
@@ -236,10 +233,11 @@ $fcont = str_replace('
 		}
 		if($bo)$bo=m('chargemodes')->insert(array(
 			'mid' 		=> $arr['mid'],
-			'updatedt' => $arr['updatedt'],
+			'updatedt'  => $arr['updatedt'],
 			'fid' 		=> $arr['fid'],
 			'adddt' 	=> $this->now
 		));
+		$this->errmsg = $msg;
 		return $bo;
 	}
 	private function updatemenu($fcont)
@@ -312,6 +310,7 @@ $fcont = str_replace('
 			$sql = '';
 			foreach($farr as $k=>$rs){
 				$lx = $rs['type'];
+				$sql= '';
 				if($lx=='sy' && isset($rs['sycont'])){
 					$str = 'KEY `'.$rs['fields'].'` ('.$rs['sycont'].')';
 				}else{

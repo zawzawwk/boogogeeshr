@@ -62,6 +62,10 @@ var c = {
 			js.msg('success','保存成功');
 		});
 		return false;
+	},
+	addmobo:function(){
+		var s = '<table width="100%" bordercolor="#000000" border="0"><tbody><tr><td width="15%" height="34" align="right" class="ys1">姓名</td><td width="35%" class="ys2">{base_name}</td><td width="15%" class="ys1" align="right">部门</td><td width="35%" class="ys2">{base_deptname}</td></tr><tr><td height="34" align="right" class="ys1">申请日期</td><td class="ys2">{dt}</td><td align="right" class="ys1">操作时间</td><td class="ys2">{optdt}</td></tr><tr><td height="34" align="right" class="ys1">说明</td><td colspan="3" class="ys2">{explain}</td></tr><tr><td height="34" align="right" class="ys1">相关文件</td><td colspan="3" class="ys2">{file_content}</td></tr></tbody></table>';
+		editor.html(s);
 	}
 };
 </script>
@@ -86,7 +90,7 @@ var c = {
 				}
 				?>
 			</div>
-			<div class="yangss" align="left">&nbsp; &nbsp;<a href="javascript:" onclick="return c.save()" class="webbtn">保存</a></div>
+			<div class="yangss" align="left">&nbsp; &nbsp;<a href="javascript:" onclick="return c.save()" class="webbtn">保存</a>&nbsp; &nbsp;<a href="javascript:" onclick="return c.addmobo()" style="background-color:#888888" class="webbtn">引用模版</a></div>
 		</div>
 	</td>
 	<td width="100%">

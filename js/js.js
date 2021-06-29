@@ -598,8 +598,7 @@ js.msgshow=function(lx,txt,sj)
 	no.css('left',''+((winWb()-no.width()-5)*0.5)+'px');
 	no.animate({top:''+(lt+3)+'px',opacity:1});
 }
-js.msg=function(lx,txt,sj)
-{
+js.msg=function(lx,txt,sj){
 	if(lx == 'none' || !lx){
 		$("div[id^='tishimsgeid_']").remove();
 		return;
@@ -702,14 +701,18 @@ js.ajax = function(url,da,fun,type,efun){
 	});
 }
 js.setoption=function(k,v){
-	if(isempt(v)){
-		localStorage.removeItem(k);
-	}else{
-		localStorage.setItem(k, v);
-	}
+	try{
+		if(isempt(v)){
+			localStorage.removeItem(k);
+		}else{
+			localStorage.setItem(k, v);
+		}
+		return true;
+	}catch(e){return false}
 }
 js.getoption=function(k,dev){
-	var s = localStorage.getItem(k);
+	var s = '';
+	try{s = localStorage.getItem(k);}catch(e){}
 	if(isempt(dev))dev='';
 	if(isempt(s))s=dev;
 	return s;

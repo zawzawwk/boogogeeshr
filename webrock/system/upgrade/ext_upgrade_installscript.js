@@ -1,6 +1,6 @@
 var wins,grid;
 var panel = {
-	xtype:'rockgrid',tablename:'chargemode',fields:['utype','keys','buyurl','instkey','updatesm'],
+	xtype:'rockgrid',tablename:'chargemode',fields:['utype','keys','buyurl','instkey','updatesm','ver'],
 	url:js.getajaxurl('getmode',mode,dir),bbarbool:false,
 	tbar:[{
 		text:'刷新',handler:function(){this.up('grid').storereload();},icon:gicons('arrow_refresh')
@@ -81,7 +81,7 @@ var panel = {
 		this.installarr=d.data;
 		this._anzmid = d.mid;
 		this._anzkey = d.installkey;
-		this._anzname = d.modename;
+		this._anzname= d.modename;
 		wins.hide();
 		Ext.MessageBox.confirm('系统提示', '验证成功，是否继续马上安装呢？', function(btn){
 			if(btn=='yes')grid.startinstalls();
@@ -112,13 +112,27 @@ var panel = {
 			}
 		},'post');
 	},
+	_querenanzover:function(){
+		js.ajax(js.getajaxurl('finish',mode,dir),{
+			modeid:this._anzmid,
+			installkey:this._anzkey,
+			modename:this._anzname,
+			ver:this.changedata.ver,
+			updatedt:this.changedata.updatedt
+		},function(s){
+			Ext.MessageBox.hide();
+			js.msg('success','安装成功');
+			grid.storereload();
+		},'post', function(){
+			Ext.MessageBox.hide();
+			js.msg('msg','安装失败,内部出错2');
+		});
+	},
 	_startinstalls:function(oi){
 		var d= this.installarr[oi];
 		var len = this.installarr.length;
 		if(oi>=len){
-			Ext.MessageBox.hide();
-			js.msg('success','安装成功');
-			this.storereload();
+			this._querenanzover();
 			return;
 		}
 		var zoi = oi+1;
@@ -138,7 +152,7 @@ var panel = {
 			}
 		},'post', function(){
 			Ext.MessageBox.hide();
-			js.msg('msg','内部处理出差');
+			js.msg('msg','安装失败,内部出错1');
 		});
 	},
 	_install:function(lx, ids,nas,buurl,kes){

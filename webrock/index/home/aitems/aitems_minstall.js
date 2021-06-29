@@ -16,13 +16,13 @@ homeitems.minstall = {
 		text:'操作',dataIndex:'utype',width:90,search:true,renderer:function(v,m,d){
 			var s='<div style="padding:10px">',ulx=v,byurl=d.get('buyurl');
 			if(ulx==0){
-				s+='<a class="a" href="'+byurl+'" target="_blank">￥看介绍</a>';
+				s+='<a class="a" href="'+byurl+'" target="_blank">可安装</a>';
 			}
 			if(ulx==1){
 				s+='<font color="#57A81E">已安装</font>';
 			}
 			if(ulx==2){
-				s+='<font color=#D31D42>↑升级</font>';
+				s+='<font color=#D31D42>↑可升级</font>';
 			}
 			s+='</div>';
 			return s;

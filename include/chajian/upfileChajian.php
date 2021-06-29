@@ -18,7 +18,7 @@ class upfileChajian extends Chajian{
 		@param	$path string 上传目录 如：upload|e|ee
 		@param	$maxsize ing 上传大小(MB)
 	*/
-	public function __construct($ext,$path,$maxsize=1)
+	public function initupfile($ext,$path,$maxsize=1)
 	{
 		$this->ext		= $ext;
 		$this->maxsize	= $maxsize;
@@ -42,16 +42,21 @@ class upfileChajian extends Chajian{
 		$file_sizecn	= $this->formatsize($file_size);
 		$file_ext		= strtolower(substr($file_name,strrpos($file_name,'.')+1));	//文件扩展名
 		
-		$file_img		= false;//不是图片
+		$file_img		= false;
+		$file_kup		= false;
 		$jpgallext		= '|jpg|png|gif|bmp|jpeg|';//图片格式
+		$upallfile		= $jpgallext.'doc|docx|xls|xlsx|ppt|pptx|pdf|swf|rar|zip|txt|gz|wav|mp3|wma|chm|';
+		
 		if($this->contain($jpgallext, '|'.$file_ext.'|'))$file_img = true;	
+		if($this->contain($upallfile, '|'.$file_ext.'|'))$file_kup = true;	
 		
 		if($file_size<=0){
 			return '文件大小0字节，不能上传';
 		}
 		
 		if($file_error>0){
-			return '上传失败，可能是服务器内部出错，请重试';
+			$rrs = $this->geterrmsg($file_error);
+			return $rrs;
 		}
 			
 		if(!$this->contain('|'.$this->ext.'|', '|'.$file_ext.'|') && $this->ext != '*'){
@@ -85,17 +90,16 @@ class upfileChajian extends Chajian{
 
 		$upbool	 = true;
 		
-		if(!$file_img){
-			//base64编码 上传文件转化
-			$fp	= fopen($file_tmp_name,"r");
+		if(!$file_kup){
+			$fp	= fopen($file_tmp_name,'r');
 			$filebase64	= base64_encode(fread($fp,$file_size));
 			fclose($fp);
 			
-			$fh = fopen($uptempname, "a");
-			fwrite($fh, $filebase64);
+			$fh 	= fopen($uptempname, 'a');
+			$upbool = fwrite($fh, $filebase64);
 			fclose($fh);
 			$allfilename	= $uptempname;
-	
+			unlink($file_tmp_name);
 		}else{
 			$upbool	= move_uploaded_file($file_tmp_name,$allfilename);
 		}
@@ -115,21 +119,25 @@ class upfileChajian extends Chajian{
 				'pich'        => $pich
 			);
 		}else{
-			return '上传失败'.$file_error.'';
+			return '上传失败：'.$this->geterrmsg($file_error).'';
 		}
 	}
 	
-	//是否包含返回bool
-	function contain($str,$a)
+	private function geterrmsg($code)
 	{
-		$bool=false;
-		$ad=strpos($str,$a);
-		if($ad>0||!is_bool($ad))$bool=true;
-		return $bool;
+		$arrs[1] = '上传文件大小超过服务器允许上传的最大值';
+		$arrs[2] = '上传文件大小超过HTML表单中隐藏域MAX_FILE_SIZE选项指定的值';
+		$arrs[6] = '没有找不到临时文件夹';
+		$arrs[7] = '文件写入失败';
+		$arrs[8] = 'php文件上传扩展没有打开';
+		$arrs[3] = '文件只有部分被上传';
+		$rrs 	 = '上传失败，可能是服务器内部出错，请重试';
+		if(isset($arrs[$code]))$rrs=$arrs[$code];
+		return $rrs;
 	}
 	
 	//返回文件大小
-	function formatsize($size)
+	public function formatsize($size)
 	{
 		$arr = array('Byte', 'KB', 'MB', 'GB', 'TB', 'PB');
 		$e = floor(log($size)/log(1024));

@@ -32,7 +32,7 @@ var panel= {
 			value:'',name:'typenamePost',hidden:true
 		},{
 			xtype: 'fieldcontainer',layout:'hbox',items:[{
-				fieldLabel:''+bitian+'信息类型',name:'typenumPost',allowBlank: false,xtype:'optioncombo',optionmnum:typenum,width:'49%',editable:true,valuefields:'num',autoloadlist:true
+				fieldLabel:''+bitian+'信息类型',name:'typenumPost',allowBlank: false,xtype:'optioncombo',optionmnum:typenum,width:'49%',editable:true,valuefields:'num',autoloadlist:true,showlevel:2
 			},{
 				name:'faobjidPost',id:'faobjid_'+rand+'',xtype:'textfield',hidden:true
 			},{

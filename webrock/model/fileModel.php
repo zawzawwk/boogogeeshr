@@ -55,4 +55,15 @@ class fileClassModel extends Model
 		}
 		return $arr;
 	}
+	
+	public function delfile($sid)
+	{
+		$where 	= "`id` in ($sid)";
+		$rows 	= $this->getall($where, 'filepath');
+		foreach($rows as $k=>$rs){
+			$path = ''.ROOT_PATH.'/'.$rs['filepath'].'';
+			if(file_exists($path))unlink($path);
+		}
+		$this->delete($where);
+	}
 }
