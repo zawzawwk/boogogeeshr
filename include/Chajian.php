@@ -9,7 +9,7 @@
 	* 网  址：http://www.rockoa.com/								*
 	* 说  明: 核心代码不要修改哦									*
 	* 备  注: 未经允许不得商业出售，代码欢迎参考纠正				*
-	* 修改时: 2016-01-26 21:59:25									*	
+	* 修改时: 2016-01-26 22:11:34									*	
 	*****************************************************************
 */
  abstract class Chajian{public$rock;public $db;public $adminname;public $adminid;public function __construct(){$this->rock= $GLOBALS['rock'];$this->db= $GLOBALS['db'];$this->adminid= $this->rock->adminid;$this->adminname= $this->rock->adminname;$this->initChajian();}public function __destruct(){$this->destChajian();}public function isempt($str){return $this->rock->isempt($str);}public function contain($str, $s1){return $this->rock->contain($str, $s1);}protected function initChajian(){}protected function destChajian(){}}
