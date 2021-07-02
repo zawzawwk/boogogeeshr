@@ -61,19 +61,20 @@ function winopt(cans){
 	Ext.apply(opt,cans);
 	return opt;
 }
-function mopenview(nu,_id, gid, lx){
+function mopenview(nu,_id, gid, lx,cans){
 	if(!lx)lx='view';
 	var sa2 = nu.split('@');
 	nu = sa2[0];
-	var can = {uid:adminid,mid:_id,jmbool:false};
+	var can = {uid:adminid,mid:_id,jmbool:true};
 	if(nu)can.modenum=nu;
 	if(sa2[1])can.table=sa2[1];
+	if(!cans)cans={};can=js.apply(can,cans);
 	var url = js.getajaxurl('$'+lx+'','flow','taskrun',can);
 	if(gid)url+='&gridid='+gid+'';
 	js.open(url, 800);
 }
-function mopenprint(nu,_id, gid){
-	mopenview(nu,_id,gid,'print');
+function mopenprint(nu,_id, gid,cans){
+	mopenview(nu,_id,gid,'print',cans);
 }
 var bitian	= '<font color=red>*</font>';
 var indexxu	= -1;

@@ -6,7 +6,7 @@ function clicksetwhere(){
 		js.msg('msg','没有设置表');
 		return;
 	}
-	wherewindows.show('工作流['+a.name+']对应表上记录',a.table,'flowset_'+a.num+'', 1);
+	wherewindows.show('工作流['+a.name+']对应表上记录',jm.encrypt(a.table),'flowset_'+a.num+'', 1);
 }
 function clicksetfield(){
 	var lx=0;
@@ -111,8 +111,9 @@ function setinputla(){
 	js.open(url, 1000,530);
 }
 var panel = {
-	xtype:'rockgridform',tablename:'flow_set',formtitle:'工作流配置',searchtools:false,
+	xtype:'rockgridform',tablename:'flow_set',formtitle:'流程配置',searchtools:false,
 	checkcolumns:true,delbool:false,celleditbool:true,defaultorder:'`sort`',
+	bbaritems:['此功能添加需要开发，谨慎添加，<a href="http://www.rockoa.com/view_flowset.html" target="_blank" class="a">查看帮助?</a>'],
 	clickgrid:function(){
 		btns(false);
 	},
@@ -133,42 +134,43 @@ var panel = {
 	}],
 	columns:[{
 		xtype: 'rownumberer',
-		width: 40
+		width: 35
 	},{
-		text:'分类',dataIndex:'type',width:50,autowidth:true
+		text:'分类',dataIndex:'type',width:'7%'
 	},{
-		text:'编号',dataIndex:'num',width:50,autowidth:true
+		text:'编号',dataIndex:'num',width:'7%'
 	},{
-		text:'名称',dataIndex:'name',width:100,autowidth:true
+		text:'名称',dataIndex:'name',width:'8%'
 	},{
-		text:'对应表',dataIndex:'table',width:90,autowidth:true
+		text:'对应表',dataIndex:'table',width:'8%'
 	},{
-		text:'排序号',dataIndex:'sort',width:70,editor:{xtype:'numberfield',minValue:0}
+		text:'排序号',dataIndex:'sort',width:'6%',editor:{xtype:'numberfield',minValue:0}
 	},{
-		text:'站内提醒',dataIndex:'zntx',width:80,sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
+		text:'站内提醒',dataIndex:'zntx',width:'7%',sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
 	},{
-		text:'REIM提醒',dataIndex:'imtx',width:80,sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
+		text:'REIM提醒',dataIndex:'imtx',width:'8%',sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
 	},{
-		text:'邮件提醒',dataIndex:'emtx',width:80,sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
+		text:'邮件提醒',dataIndex:'emtx',width:'7%',sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
 	},{
-		text:'单号规则',dataIndex:'sericnum',autowidth:true,width:120,renderer:function(v){
+		text:'微信提醒',dataIndex:'wxtx',width:'7%',sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
+	},{
+		text:'单号规则',dataIndex:'sericnum',flex:1,renderer:function(v){
 			return v+'序号';
 		}
 	},{
-		text:'摘要',align:'left',dataIndex:'summary',flex:1,renderer:rendercont
+		text:'有流程?',dataIndex:'isflow',autowidth:true,width:'7%',sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
 	},{
-		text:'有流程?',dataIndex:'isflow',autowidth:true,width:70,sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
+		text:'app模块',dataIndex:'isapp',autowidth:true,width:'7%',sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
 	},{
-		text:'app模块',dataIndex:'isapp',autowidth:true,width:75,sortable:true,editor:{xtype:'combo',store:js.arraystr(),editable:false},renderer:renderbox
-	},{
-		text:'ID',dataIndex:'id',width:50
+		text:'ID',dataIndex:'id',width:'5%'
 	}],
 	formwidth:600,
 	formparams:{
-		submitfields:'name,num,sort,table,summary,type,zntx,imtx,emtx,isflow,sericnum,isapp',
-		params:{int_filestype:'sort,zntx,imtx,emtx,isflow,isapp',otherfields:'optdt={now}'},autoScroll:false,
+		submitfields:'name,num,sort,table,summary,type,zntx,imtx,emtx,isflow,sericnum,isapp,wxtx,receid,recename',
+		params:{int_filestype:'sort,zntx,imtx,emtx,isflow,isapp,wxtx',otherfields:'optdt={now}'},autoScroll:false,
 		url:publicsave(mode, dir),
 		aftersaveaction:'pandtablela',
+		beforesaveaction:'pandtablelabefore',
 		items:[{
 			fieldLabel:'id号',value:'0',name:'idPost',hidden:true
 		},{
@@ -197,8 +199,39 @@ var panel = {
 			},{
 				fieldLabel:'&nbsp;',labelWidth:10,name:'isappPost',xtype:'checkboxfield',boxLabel:'APP模块',inputValue:'1',checked:true,labelSeparator:''
 			}]
+		},{
+			xtype: 'fieldcontainer',defaultType: 'textfield',layout:'hbox',items:[{
+				fieldLabel:'&nbsp;',name:'wxtxPost',xtype:'checkboxfield',boxLabel:'微信提醒推送(请确保有<a href="http://www.rockoa.com/view_weixin.html" target="_blank" class="a">微信企业号</a>后才开启否则系统将崩溃)',inputValue:'1',checked:false,labelSeparator:''
+			}]
+		},{
+			name:'receidPost',id:'receid_'+rand+'',xtype:'textfield',hidden:true
+		},{
+			fieldLabel:'可用人员',nameidfields:'receid_'+rand+'',name:'recenamePost',xtype:'changedeptuser',changetitle:'选择人员',changetype:'deptusercheckall'
 		}]
-	}
+	},
+	fields:['summary','receid','recename'],
+	features: [{
+		ftype: 'rowbody',
+		getAdditionalData: function(v, index) {
+			var cont = v.summary,s	= '',s1='',receid=v.receid;
+			var cls = 'x-grid-row-body-hidden';
+			s= '可用：<font color=green>全体人员</font>';
+			if(!isempt(receid)&&receid!='all')s= '可用：<font color=blue>'+v.recename+'</font>';
+			if(!isempt(cont)){
+				s+='，摘要：'+cont+'';
+			}
+			if(s!=''){
+				cls = '';
+				s1	= '<div style="padding:2px;line-height:20px;padding-left:20%;">'+s+'</div>';
+			}
+			return {
+				rowBody: s1,
+				rowBodyCls:cls
+			};
+		}
+	}, {
+		ftype: 'rowwrap'
+	}]
 };
 
 

@@ -12,7 +12,7 @@ class projectmflowClass extends flowChajian
 		$arr[] = array(
 			'fields' 		=> 'jindu',
 			'name' 			=> '项目进度报告',
-			'data' 			=> c('html')->createrows($rows, $headstr, '#000000'),
+			'data' 			=> c('html')->createrows($rows, $headstr, '#000000', 'noborder'),
 		);
 		return $arr;
 	}

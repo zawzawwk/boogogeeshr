@@ -15,7 +15,7 @@ class mailerChajian extends Chajian{
 		$this->mail->IsSMTP();
 		$this->mail->SMTPAuth   = true;
 		$this->mail->SMTPDebug  = 0;    
-		$this->mail->CharSet	= 'utf8';  
+		$this->mail->CharSet	= 'UTF-8';  
 		$this->mailbool  		= false;  
 	}
 	
@@ -34,12 +34,12 @@ class mailerChajian extends Chajian{
 	
 	//发件人邮箱地址  
 	public function setFrom($from, $name=''){
-		$this->mail->SetFrom($from, $name);
+		$this->mail->SetFrom($from, $this->tojoin($name));
 	}
 	
 	//设置回复
 	public function addReplyTo($address, $name=''){
-		$this->mail->AddReplyTo($address, $name);
+		$this->mail->AddReplyTo($address, $this->tojoin($name));
 	}
 	
 	//添加抄送
@@ -50,7 +50,7 @@ class mailerChajian extends Chajian{
 		for($i=0; $i<count($a1); $i++){
 			$na = '';
 			if(isset($n1[$i]))$na = $n1[$i];
-			$this->mail->AddCC($a1[$i], $na);
+			$this->mail->AddCC($a1[$i], $this->tojoin($na));
 		}
 	}
 	
@@ -62,7 +62,7 @@ class mailerChajian extends Chajian{
 		for($i=0; $i<count($a1); $i++){
 			$na = '';
 			if(isset($n1[$i]))$na = $n1[$i];
-			$this->mail->AddBCC($a1[$i], $na);
+			$this->mail->AddBCC($a1[$i], $this->tojoin($na));
 		}
 	}
 	
@@ -74,7 +74,7 @@ class mailerChajian extends Chajian{
 		for($i=0; $i<count($a1); $i++){
 			$na = '';
 			if(isset($n1[$i]))$na = $n1[$i];
-			$this->mail->AddAddress($a1[$i], $na);
+			$this->mail->AddAddress($a1[$i], $this->tojoin($na));
 		}
 	}
 	
@@ -89,7 +89,7 @@ class mailerChajian extends Chajian{
 	
 	//发送邮件
 	public function sendMail($Subject, $body=''){
-		$this->mail->Subject = $Subject;
+		$this->mail->Subject = $this->tojoin($Subject);
 		$this->mail->Body 	 = $body;
 		$this->mail->IsHTML(true);
 		$this->mailbool		 = $this->mail->Send();
@@ -102,5 +102,9 @@ class mailerChajian extends Chajian{
 	public function getErrror(){
 		return $this->mail->ErrorInfo;
 	}
-
+	
+	private function tojoin($name)
+	{
+		return "=?UTF-8?B?".base64_encode($name)."?=";
+	}
 }	       

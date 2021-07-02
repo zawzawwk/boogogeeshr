@@ -58,10 +58,10 @@ var panel = {
 				if(d.get('price')>0)s+='&nbsp;<a class="a" href="'+byurl+'" target="_blank">购买</a>';
 			}
 			if(ulx==1){
-				s+='<font color="#57A81E">已安装</font>';
+				s+='<font color="#57A81E">已安装</font>&nbsp;<a class="a" onclick="return rock['+index+']._delanstal('+sid+')" href="javascript:">删</a>';
 			}
 			if(ulx==2){
-				s+='<a href="javascript:" onclick="return rock['+index+']._install(1,'+sid+',\''+name+'\',\''+byurl+'\',\''+inst+'\')" style="background:#D31D42" class="webbtn">↑升级</a>';
+				s+='<a href="javascript:" onclick="return rock['+index+']._install(1,'+sid+',\''+name+'\',\''+byurl+'\',\''+inst+'\')" style="background:#D31D42" class="webbtn">↑升级</a>&nbsp;<a class="a" onclick="return rock['+index+']._delanstal('+sid+')" href="javascript:">删</a>';
 			}
 			if(ulx==3){
 				s+='<font color=red>版本不支持此模块</font>';
@@ -73,6 +73,18 @@ var panel = {
 			return s;
 		}
 	}],
+	_delanstal:function(sid){
+		Ext.MessageBox.confirm('系统提示', '确定要删除/重新安装次模块吗？', function(a){
+			if(a=='yes'){
+				js.msg('wait','删除中...');
+				js.ajax(js.getajaxurl('delanstall',mode,dir),{sid:sid},function(s){
+					js.msg('success','删除成功');
+					grid.storereload();
+				});
+			}
+		});
+		return false;
+	},
 	installarr:[],
 	_anzmid:0,
 	_anzkey:'',

@@ -4,7 +4,7 @@ class setClassAction extends Action
 	private $isdemo = false;
 	public function initAction()
 	{
-		if($this->contain(URL, '211.149.234.93') || $this->contain(URL, 'demo') )$this->isdemo=true;
+		if($this->contain(URL, 'demo.'))$this->isdemo=true;
 	}
 
 	public function setsaveAjax()

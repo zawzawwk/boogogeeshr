@@ -28,7 +28,7 @@ class flowlogClassModel extends Model
 			if($optid==0)$optid=$rs['uid'];
 			$urs 	= m('admin')->getone($rs['uid'], 'name,deptname');
 			$aurs 	= m('admin')->getone($optid, 'name,deptname');
-			$logarr	= m('flow_log')->getall("$where order by `id`");
+			$logarr	= m('flow_log')->getall("$where order by `id` desc");
 			
 			$status = $rs['status'];
 		}
@@ -123,11 +123,13 @@ class flowlogClassModel extends Model
 		}
 		$inputrs	= array();
 		if($inputid>0)$inputrs=m('flow_courseinput')->getall("`mid`='$inputid' and `mid`>0 order by `sort`");
+		m('log')->addread($table, $mid, $uids);
 		$arr		= array(
 			'data'	=> $rs,
 			'user'	=> $urs,
 			'aurs'	=> $aurs,
 			'log'	=> $log,
+			'readarr' => m('log')->getreadarr($table, $mid),
 			'logstr'=> $this->getlogstr($log),
 			'logarr' => $logarr,
 			'ischeck' => $ischeck,

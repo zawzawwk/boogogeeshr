@@ -10,11 +10,13 @@ class indexClassAction extends Action{
 	{
 		$this->tpltype	= 'html';
 		$uid			= $this->jm->gettoken('uid');
+		$token			= $this->jm->gettoken('token');
 		$this->adminid	= $uid;
 		$db		= m('admin');
 		$ars	= $db->getone("`id`='$uid'", '`name`,`id`,`face`,`ranking`');
 		if(!$ars)exit('sorry!');
 		$this->smartydata['ars'] 		= $ars;
+		$this->smartydata['token'] 		= $token;
 		$this->smartydata['aface']		= $this->rock->repempt($ars['face'], 'images/im/user100.png');
 	}
 
@@ -22,12 +24,9 @@ class indexClassAction extends Action{
 	//定时更新我在线时间
 	private function updatemy()
 	{
-		$uid = $this->adminid;
-		$now = $this->now;
-		$db  = m('admin');
-		$db->update("`imonline`=1,`imlastdt`='$now'", $uid);
-		$moindts = c('date',true)->adddate($now,'i', -12);
-		$db->update("`imonline`=0", "`imlastdt`<'$moindts'");
+		$uid 	= $this->adminid;
+		$token 	= $this->get('token');
+		m('login')->uplastdt('reim', $token);
 	}
 	
 	public function dingshiupAjax()
@@ -48,9 +47,14 @@ class indexClassAction extends Action{
 	
 	private function getuserla($where='')
 	{
-		$urs = m('admin')->getall("`status`=1 and `state`<>5 $where order by `imonline` desc,`name` asc",'`id`,`name`,`deptid`,`ranking`,`imonline`,`face`');
-		foreach($urs as $k=>$rs){
-			$urs[$k]['face'] = $this->rock->repempt($rs['face'], 'images/im/user100.png');
+		$dbs = m('admin');
+		$urs = $dbs->getall("`status`=1 and `state`<>5 $where order by `name` asc",'`id`,`name`,`deptid`,`ranking`,`face`');
+		$onar= $dbs->getonlines('reim');
+		foreach($urs as $k=>$rs){	
+			$imonline = 0;
+			if(in_array($rs['id'], $onar))$imonline=1;
+			$urs[$k]['imonline'] = $imonline;
+			$urs[$k]['face'] 	 = $this->rock->repempt($rs['face'], 'images/im/user100.png');
 		}
 		return $urs;
 	}

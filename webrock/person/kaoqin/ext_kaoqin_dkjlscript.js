@@ -31,17 +31,22 @@ var panel={
 		if(!isempt(s2))s+="[K][A][K]a.`checktime`[K]<=[K]'"+s2+" 23:59:59'";
 		return s;
 	},
+	fields:['locationid'],
 	columns:[{
 		xtype: 'rownumberer',
 		width: 40
 	},{
 		text:'部门',dataIndex:'deptname',flex:1,search:true,qz:'b.'
 	},{
-		text:'姓名',dataIndex:'name',width:'20%',search:true,qz:'b.'
+		text:'姓名',dataIndex:'name',width:'10%',search:true,qz:'b.'
 	},{
 		text:'时间',dataIndex:'checktime',width:'24%',search:true
 	},{
-		text:'星期',dataIndex:'cnweek',width:'20%'
+		text:'星期',dataIndex:'cnweek',width:'8%'
+	},{
+		text:'来源类型',dataIndex:'type',width:'10%'
+	},{
+		text:'打卡地址',dataIndex:'address',width:'22%',align:'left'
 	}]
 }
 return {

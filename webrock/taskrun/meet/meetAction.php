@@ -26,7 +26,6 @@ class meetClassAction extends Action{
 			$arr['startdt'] = $dt.' '.$rs['startdt'];
 			$arr['enddt'] 	= $dt.' '.$rs['enddt'];
 			$arr['rate'] 	= '';
-			$arr['state'] 	= 0;
 			$arr['status'] 	= 1;
 			$arr['isturn'] 	= 1;
 			$arr['statusman'] 		= '';
@@ -34,6 +33,7 @@ class meetClassAction extends Action{
 			$arr['nowcheckid'] 		= '';
 			$arr['allcheckid']		= '';
 			unset($arr['id']);
+			unset($arr['state']);
 			$where	= "`startdt` like '".$dt."%' and `mid`='".$rs['id']."'";
 			$jibo 	= $db->rows($where);
 			if($jibo > 0){
@@ -46,6 +46,7 @@ class meetClassAction extends Action{
 			if($isadd==0)if($this->contain($rate, ',周'.$W.','))$isadd = 1;
 			if($isadd == 1){
 				$arr['optdt'] 	= $this->now;
+				$arr['state']	= 0;
 				$db->insert($arr);
 			}
 		}

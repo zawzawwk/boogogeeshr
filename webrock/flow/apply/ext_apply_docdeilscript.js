@@ -1,6 +1,6 @@
 var frompanel={
 	submitfields:'receid,recename,explain,title',labelWidth:100,
-	params:{int_filestype:'receid',otherfields:'optdt={now},uid={adminid},status=0'},
+	params:{int_filestype:'',otherfields:'optdt={now},uid={adminid},status=0'},
 	items:[{
 		value:'0',name:'idPost',hidden:true
 	},{
@@ -12,7 +12,7 @@ var frompanel={
 	},{
 		name:'receidPost',id:'receid_'+rand+'',hidden:true
 	},{
-		fieldLabel:'接收人',name:'recenamePost',allowBlank: false,xtype:'changedeptuser',changetype:'user',nameidfields:'receid_'+rand+'',changetitle:'选择接收人'
+		fieldLabel:'接收人',name:'recenamePost',allowBlank: false,xtype:'changedeptuser',changetype:'usercheck',nameidfields:'receid_'+rand+'',changetitle:'选择接收人'
 	},uploadwindows.fields(),{
 		fieldLabel:'说明',name:'explainPost',xtype:'textareafield',height:60
 	}],

@@ -9,9 +9,9 @@ class apiClassAction extends Action{
 	*/
 	public function onofflineAjax()
 	{
-		$uid	= (int)$this->request('uid');
-		$online = (int)$this->request('online');
-		m('admin')->update("`imonline`='$online',`imlastdt`='$this->now'", $uid);
+		//$uid	= (int)$this->request('uid');
+		//$online = (int)$this->request('online');
+		//m('admin')->update("`imonline`='$online',`imlastdt`='$this->now'", $uid);
 		echo 'success';
 	}
 

@@ -18,7 +18,7 @@ define('REWRITE', 'true');
 if(!defined('PROJECT'))define('PROJECT', $rock->get('p', 'webrock'));
 
 $config		= array(
-	'title'		=> 'ROCKOA',
+	'title'		=> 'RockOA',
 	'url'		=> 'http://'.HOST.'/rock/',
 	'urly'		=> 'http://demo.rockoa.com/',
 	'db_host'	=> 'sr0qk0oq0kjp0rs0rq0klj0kkk0sr0ok0qr0nr09',

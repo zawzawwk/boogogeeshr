@@ -31,6 +31,8 @@ class kaoqinClassAction extends Action{
 		$total	= $arr['total'];
 		$rows	= $arr['rows'];
 		$cdto	= c('date', true);
+		$tayarr	= array('打卡机','异常登记','在线打卡','定位打卡');
+		$tabarr = $this->db->getalltable();
 		foreach($rows as $k=>$rs){
 			$rows[$k]['cnweek'] = $this->rock->cnweek($rs['checktime']);
 			$jg = $cdto->datediff('d', $rs['checktime'], $this->date);
@@ -40,6 +42,17 @@ class kaoqinClassAction extends Action{
 			if($jg==2)$str = '前天';
 			$rows[$k]['checktime'].=' ('.$str.')';
 			$rows[$k]['xuhao'] = $k+1;
+			$rows[$k]['type'] = $tayarr[$rs['type']];
+			
+			$locationid = $rs['locationid'];
+			$address	= '';
+			if(in_array($this->rock->T('wx_location'), $tabarr)){
+				$address = $this->db->getmou('[Q]wx_location','label', "`id`='$locationid'");
+				if(!$this->isempt($address)){
+					$address.='<a href="javascript:" onclick="return js.open(js.getajaxurl(\'@location\',\'kaoqin\',\'person\',{lid:'.$locationid.'}))" class="a">[地图]</a>';
+				}
+			}
+			$rows[$k]['address'] = $address;
 		}
 
 		$bacarr	= array(
@@ -93,5 +106,14 @@ class kaoqinClassAction extends Action{
 		}else{
 			echo '不能添加，请先设置打卡IP';
 		}
+	}
+	
+		
+	public function locationAction()
+	{
+		$this->tpltype = 'html';
+		$lid	= $this->get('lid');
+		$rs 	= m('wx_location')->getone($lid);
+		$this->smartydata['rs'] = $rs;
 	}
 }

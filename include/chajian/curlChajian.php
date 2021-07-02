@@ -4,13 +4,13 @@
 */
 class curlChajian extends Chajian{
 	
-	public function getfilecont($url)
+	private function strurl($url)
 	{
-		@$result = file_get_contents($url);
-		return $result;
+		$url = str_replace('&#47;', '/', $url);
+		return $url;
 	}
 	
-	public function postfilecont($url, $data=array())
+	private function getdatastr($data)
 	{
 		$cont = '';
 		if(is_array($data)){
@@ -19,6 +19,20 @@ class curlChajian extends Chajian{
 		}else{
 			$cont 	= $data;
 		}
+		return $cont;
+	}
+	
+	public function getfilecont($url)
+	{
+		$url 	 = $this->strurl($url);
+		@$result = file_get_contents($url);
+		return $result;
+	}
+	
+	public function postfilecont($url, $data=array())
+	{
+		$url  	= $this->strurl($url);
+		$cont 	= $this->getdatastr($data);
 		$len 	= strlen($cont);
 		$opts 	= array(  
 			'http'	=>	array(  
@@ -36,10 +50,20 @@ class curlChajian extends Chajian{
 	
 	public function getcurl($url)
 	{
+		if(!function_exists('curl_init')){
+			return $this->getfilecont($url);
+		}
+		$url= $this->strurl($url);
+		$ishttps = 0;
+		if(substr($url,0, 5)=='https')$ishttps=1;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
+		if($ishttps==1){
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		}
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30); 
 		$output = curl_exec($ch);
 		curl_close($ch);
 		return $output;
@@ -47,15 +71,26 @@ class curlChajian extends Chajian{
 	
 	public function postcurl($url, $data=array())
 	{
+		if(!function_exists('curl_init')){
+			return $this->postfilecont($url, $data);
+		}
+		$url	= $this->strurl($url);
+		$cont 	= $this->getdatastr($data);
+		$ishttps = 0;
+		if(substr($url,0, 5)=='https')$ishttps=1;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
-	　　curl_setopt($ch, CURLOPT_RETURNTRANSFER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-	　　curl_setopt($ch, CURLOPT_POST, 1);// post数据
-	　　curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $cont);
+		if($ishttps==1){
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		}
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30); 
 		$output = curl_exec($ch);
 		$curl_errno = curl_errno($ch);
-	　　curl_close($ch);
+		curl_close($ch);
 		return $output;
 	}
 }                                                                                                                                                            

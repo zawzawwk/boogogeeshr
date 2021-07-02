@@ -91,13 +91,33 @@ class inforClassAction extends Action
 	//推送到REIM
 	public function reimsendinfor($table, $cans, $id)
 	{
-		if($this->post('isreimPost')!='1')return;
 		$recrids = $cans['faobjid'];
-		$recruid = m('admin')->gjoin($recrids);
-		if($recruid=='')return;
-		$reim 	= m('reim');
-		$cont	= '['.$cans['typename'].']'.$cans['title'].'';
-		$url	= $reim->createurl('gong', $id);
-		$reim->sendsystem($this->adminid, $recruid, 'OA通告', $cont, 'infor',$id, $url);
+		$recruid = '';
+		$isreim  = $this->post('isreimPost');
+		$isweix  = $this->post('isweixinPost');
+		if($isreim=='1' || $isweix=='1'){
+			$recruid = m('admin')->gjoin($recrids);
+			if($recruid=='')return;
+		}
+		if($isreim=='1'){
+			$reim 	= m('reim');
+			$cont	= '['.$cans['typename'].']'.$cans['title'].'';
+			$url	= $reim->createurl('gong', $id);
+			$reim->sendsystem($this->adminid, $recruid, 'OA通告', $cont, 'infor',$id, $url);
+		}
+		if($isweix=='1'){
+			$wxurl			= $this->option->getval('weixin_url');
+			if(!$this->isempt($wxurl)){
+				$url 			= $wxurl.'gongv.html?id='.$id.'';
+				$description	= "类型：".$cans['typename']."\n发送人：".$this->adminname."";
+				if(!$this->isempt($cans['zuozhe']))$description.="\n发布者：".$cans['zuozhe']."";
+				if(!$this->isempt($cans['indate']))$description.="\n时间：".$cans['indate']."";
+				$arr = m('weixin:index')->sendnews($recruid,'通知公告', array(
+					'title' 		=> $cans['title'],
+					'description' 	=> $description,
+					'url' 			=> $url
+				));
+			}
+		}
 	}
 }

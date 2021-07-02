@@ -1,7 +1,10 @@
 <?php
 class dirClassAction extends Action
 {
-
+	public function initAction()
+	{
+		exit;
+	}
 
 	
 	public function getsysfilodAjax()
@@ -84,48 +87,5 @@ class dirClassAction extends Action
 			}
 		}
 		return $arr;
-	}
-	
-	public function openAjax()
-	{
-		$path	= $this->rock->get('path');
-		$filename	= $this->rock->get('filename');
-		header('Content-type:application/vnd.ms-excel');
-		header('Content-disposition:attachment;filename='.iconv("utf-8","gb2312",str_replace(' ','',$filename)).'');
-		$content	= file_get_contents($path);
-		echo $content;
-	}
-	
-	//删除文件
-	public function delAjax()
-	{
-		$path	= $this->rock->post('path');
-		$aid	= explode(',',  $this->rock->post('aid'));
-		foreach($aid as $aid1){
-			$rand	= date('YmdHis').'_'.rand(100,999);
-			$spath	= ''.$path.''.$aid1.'';
-			if(file_exists($spath)){
-				if($this->rock->contain($aid1,'delcopy') ){
-					unlink($spath);
-				}else{
-					$lujing = str_replace('../','',$path);
-					$lujing = str_replace('/','-',$lujing);
-					$sdfd1	= str_replace('.', '_delcopy'.$rand.'['.$lujing.'].', $aid1);
-				//用移动方式删除文件
-					rename(ROOT_PATH.'/'.$spath.'',''.ROOT_PATH.'/log/'.$sdfd1.'');
-				}
-			}
-		}
-		echo 'success';
-	}
-	
-	//重命名
-	public function renameAjax()
-	{
-		$path	= $this->rock->post('path');
-		$old	= $this->rock->post('old');
-		$newa	= $this->rock->post('newa');
-		rename(ROOT_PATH.'/'.$path.''.$old.'',''.ROOT_PATH.'/'.$path.''.$newa.'');
-		echo 'success';
 	}
 }

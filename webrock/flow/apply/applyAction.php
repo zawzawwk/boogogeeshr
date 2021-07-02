@@ -3,8 +3,10 @@ class applyClassAction extends Action
 {
 	public function applybeforedata($table)
 	{
-		$s = 'and isflow=1';
-		return $s;
+		$s 		= 'and isflow=1 ';
+		$arsa 	= '`receid` is null';
+		$where 	= m('admin')->getbhmy('receid', $this->adminid, array($arsa));
+		return $s.$where;
 	}
 	
 	//读取审核统计
@@ -73,7 +75,7 @@ class applyClassAction extends Action
 	//我申请的列表
 	public function checkmychange($table, $rows)
 	{
-		$protype	= (int)$this->post('protype');
+		$protype= (int)$this->post('protype');
 		$uid	= '0';
 		$mid	= '0';
 		$rudb 	= m('flow_course');
@@ -117,6 +119,11 @@ class applyClassAction extends Action
 		}
 		$carr = array();
 		if($this->loadcount==1){
+			$recewh	= '';
+			if($protype==0){
+				$arsa 	= '`receid` is null';
+				$recewh	= m('admin')->getbhmy('receid', $this->adminid, array($arsa));
+			}
 			$where= '';$snum='';
 			if($protype == 3){
 				$where = 'and 1=2';
@@ -127,7 +134,7 @@ class applyClassAction extends Action
 					$where = " and instr('$snum', concat(',',`num`,','))>0";
 				}
 			}
-			$mrss = m('flow_set')->getall("isflow=1 $where order by `sort`", '`id`,`num`,`name`,`table`,`type`');
+			$mrss = m('flow_set')->getall("isflow=1 $where $recewh order by `sort`", '`id`,`num`,`name`,`table`,`type`');
 			foreach($mrss as $k=>$rs){
 				$rs['leaf'] = true;
 				$carr[$rs['type']][] = $rs;

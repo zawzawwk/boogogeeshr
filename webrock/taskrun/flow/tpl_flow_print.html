@@ -72,12 +72,9 @@ function openyulan(){
 	$('#divbtn').show();
 }
 function printword(){
-	var as = js.request('rocktoken'),bs,url='';
+	var as = '<?=$da['wordurl']?>',bs,url='';
 	if(as){
-		bs = jm.uncrypt(as);
-		bs = bs.replace('a=print','a=word');
-		bs = jm.encrypt(bs);
-		url = ''+js.path+'.php?rocktoken='+bs+'';
+		url = ''+js.path+'.php?rocktoken='+as+'';
 	}else{
 		url = location.href;
 		url = url.replace('a=print','a=word');
@@ -113,11 +110,12 @@ function printword(){
 
 
 <div align="center">
-	<!--表格头部自己在着添加-->
-	
-	<!--END-->
 	<div style="width:700px" id="contentview">
-		<div style="padding-bottom:15px;font-size:30px"><?=$da['title']?></div>
+		<?php 
+		if($da['notitle']!='true'){
+			echo '<div style="padding-bottom:15px;font-size:30px">'.$da['title'].'</div>'; 
+		}
+		?>
 		<div  style="background-color:white" class="tdcont">
 			<?=$da['content']?>
 		</div>

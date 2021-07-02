@@ -1,3 +1,6 @@
+var addmentfus=function(){
+	addtabs('[新增]会议室预定','flow,apply,meet,flownum=meet,tablename=meet,opentype=0,mid=0,gridid=');
+};
 var panel={
 	xtype:'calendarpanel',textvalign:'top',
 	showType:'data',
@@ -19,6 +22,8 @@ var panel={
 		xtype:'rockdate',format:'month',emptyText:'月份',width:80,id:'month_'+rand+'',change:function(a){
 			
 		}
+	},'-',{
+		text:'新增会议室预定',icon:gicons('add'),handler:addmentfus
 	}]
 };
 return {

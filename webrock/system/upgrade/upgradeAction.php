@@ -17,7 +17,7 @@ class upgradeClassAction extends Action
 	{
 		$url = $this->updatekey;
 		$url.= 'index.php?m=api&ajaxbool=true&a='.$act.'';
-		$url.= '&host='.$this->rock->jm->base64encode(HOST).'';
+		$url.= '&host='.$this->rock->jm->base64encode(HOST).'&version='.VERSION.'';
 		foreach($can as $k=>$v)$url.='&'.$k.'='.$v.'';
 		return $url;
 	}
@@ -89,11 +89,17 @@ class upgradeClassAction extends Action
 		$lx 		= (int)$this->post('lxPost');
 		$installkey = $this->post('installkeyPost');
 		if($lx==0)$installkey = $this->rock->jm->base64encode($installkey);
-		$msg 		= '';
+		$msg 		= '';$maver = '';
+		$msarr		= $this->db->getall("SELECT max(ver)ver,modeid FROM `[Q]chargemode` GROUP BY modeid");
+		foreach($msarr as $k=>$rs){
+			$maver.=','.$rs['modeid'].'|'.$rs['ver'].'';
+		}
+		if($maver!='')$maver = substr($maver,1);
 		$url 		= $this->getupurl('modeinstall', array(
 			'mid' => $mid,
 			'installkey' => $installkey,
-			'randkeyup'  => $this->randkeyup
+			'randkeyup'  => $this->randkeyup,
+			'maver'  	 => $this->rock->jm->base64encode($maver)
 		));
 		$data  	= array();
 		$cont 	= c('curl')->getfilecont($url);
@@ -103,6 +109,12 @@ class upgradeClassAction extends Action
 				$msg = $arr['msg'];
 			}else{
 				$data = $arr['data'];
+				$near = array();
+				foreach($data as $k=>$rs){
+					$to = $this->db->rows('[Q]chargemodes', "`mid`='$mid' and `fid`='".$rs['id']."' and `updatedt`='".$rs['updatedt']."'");
+					if($to==0)$near[]=$rs;
+				}
+				$data = $near;
 			}
 		}else{
 			$msg = '请求失败';
@@ -382,5 +394,11 @@ class upgradeClassAction extends Action
 		}
 		$barr['rows'] = $arr;
 		$this->returnjson($arr);
+	}
+	
+	public function delanstallAjax()
+	{
+		$sid = $this->get('sid');
+		m('chargemode')->delete("modeid='$sid'");
 	}
 }

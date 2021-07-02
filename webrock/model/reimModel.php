@@ -27,17 +27,12 @@ class reimClassModel extends Model
 		}
 		if($this->isempt($receid))return 'not receuid';
 		$receids = $receid;
+		
 		$wheres	 = " and `id` in($receid)";
 		if($receid=='all')$wheres='';
-		$apsid 		= $resid = $allsid = '';
-		$recrarr 	= $this->db->getall("select id,applastdt,imonline,imlastdt from [Q]admin where `status`=1 and `state`<>5 $wheres");
-		$time 		= time();
+		$allsid 	= '';
+		$recrarr 	= $this->db->getall("select id from [Q]admin where `status`=1 and `state`<>5 $wheres");
 		foreach($recrarr as $k=>$rs){
-			if(!$this->isempt($rs['applastdt']))$apsid.=','.$rs['id'].'';
-			if(!$this->isempt($rs['imlastdt'])){
-				$time1= strtotime($rs['imlastdt']);
-				if($time1>$time-60*15)$resid.=','.$rs['id'].'';
-			}
 			$allsid.=','.$rs['id'].'';
 		}
 		if($allsid != ''){
@@ -58,22 +53,19 @@ class reimClassModel extends Model
 			$messid	= $this->db->insert_id();
 			$this->db->insert('[Q]im_messzt','`mid`,`uid`,`gid`','select '.$messid.',id,'.$gid.' from `[Q]admin` where id in('.$allsid.') and `status`=1 and `state`<>5 ', true);
 		}
-		
-		if($resid != ''){
-			$resid = substr($resid, 1);
-			if($receids=='all')$resid = 'all';
-			$this->socket->send($sendid, $resid, array(
-				'cont'	=> $cont,
-				'gname'	=> $gname,
-				'gid'	=> $gid,
-				'type'	=> 'system',
-				'now'	=> $this->rock->now,
-				'messid'=> $messid,
-				'table'	=> $table,
-				'mid'	=> $mid,
-				'url'	=> $url
-			));
-		}
+		$resid = $receids;
+		if($resid!='all')$resid = m('admin')->getonline($resid);
+		if($resid!='')$this->socket->send($sendid, $resid, array(
+			'cont'	=> $cont,
+			'gname'	=> $gname,
+			'gid'	=> $gid,
+			'type'	=> 'system',
+			'now'	=> $this->rock->now,
+			'messid'=> $messid,
+			'table'	=> $table,
+			'mid'	=> $mid,
+			'url'	=> $url
+		));
 		return true;
 	}
 	

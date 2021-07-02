@@ -108,9 +108,7 @@ Ext.define('Ext.rock.flowgrid',{
 	},
 	_view:function(){
 		var a = this.changedata;
-		var url = js.getajaxurl('$view','flow','taskrun',{uid:adminid,mid:a.id,modenum:this.flownum,table:this.tablename,jmbool:true});
-		url+='&gridid='+this.getId()+'';
-		js.open(url, 800);
+		mopenview(this.flownum,a.id, this.getId());
 	},
 	_zhuijiagrid:function(){
 		var me = this;

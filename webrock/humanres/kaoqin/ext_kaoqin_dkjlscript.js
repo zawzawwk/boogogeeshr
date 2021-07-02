@@ -48,17 +48,19 @@ var panel={
 		xtype: 'rownumberer',
 		width: 40
 	},{
-		text:'部门',dataIndex:'deptname',width:260,search:true,qz:'b.'
+		text:'部门',dataIndex:'deptname',flex:1,search:true,qz:'b.'
 	},{
-		text:'姓名',align:'center',dataIndex:'name',width:120,search:true,qz:'b.'
+		text:'姓名',align:'center',dataIndex:'name',width:'10%',search:true,qz:'b.'
 	},{
-		text:'指纹号',align:'center',dataIndex:'finge',width:80,search:true,qz:'a.'
+		text:'指纹号',align:'center',dataIndex:'finge',width:'6%',search:true,qz:'a.'
 	},{
-		text:'时间',align:'center',dataIndex:'checktime',width:230,search:true
+		text:'时间',align:'center',dataIndex:'checktime',width:'24%',search:true
 	},{
-		text:'星期',dataIndex:'cnweek',width:100
+		text:'星期',dataIndex:'cnweek',width:'6%'
 	},{
-		text:'ID',align:'center',dataIndex:'id',width:60
+		text:'来源类型',dataIndex:'type',width:'10%'
+	},{
+		text:'打卡地址',dataIndex:'address',width:'22%',align:'left'
 	}],
 	_add:function(){
 		

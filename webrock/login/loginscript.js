@@ -10,6 +10,9 @@ function loginsubmit(){
 	if(js.bool)return false;
 	var user = form('adminuser').value;
 	var pass = form('adminpass').value;
+	var device= js.cookie('deviceid');
+	if(device=='')device=js.now('time');
+	js.savecookie('deviceid', device, 365);
 	if(user==''){
 		js.setmsg('帐号不能为空','red');
 		form('adminuser').focus();
@@ -25,6 +28,9 @@ function loginsubmit(){
 	var data	= js.getformdata();
 	var url		= js.getajaxurl('check','login');
 	data.jmpass	= 'false';
+	data.device = device;
+	data.adminuser = jm.base64encode(user);
+	data.adminpass = jm.base64encode(pass);
 	if(oldpass==pass)data.jmpass= 'true';
 	js.bool		= true;
 	$.post(url,data,function(da){

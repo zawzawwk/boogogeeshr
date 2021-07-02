@@ -153,6 +153,8 @@ var panel = {
 	},{
 		text:'所属单位',dataIndex:'companyname',autowidth:true
 	},{
+		text:'微信号',dataIndex:'weixinid',width:100,editor:'textfield',search:true
+	},{
 		text:'ID',dataIndex:'id',width:60
 	}],
 	formadd:function(f){
@@ -169,7 +171,7 @@ var panel = {
 	formwidth:600,
 	formparams:{
 		url:publicsave(mode,dir),
-		submitfields:'user,pass,name,tel,email,status,groupname,gender,mobile,type,ranking,superman,superid,deptid,deptname,sort,companyid',
+		submitfields:'user,pass,name,tel,email,status,groupname,gender,mobile,type,ranking,superman,superid,deptid,deptname,sort,companyid,weixinid',
 		params:{int_filestype:'status,type,deptid,sort,companyid',add_otherfields:'adddt={now},workdate={date},state=2',md5_filestype:'pass',otherfields:'optdt={now},optname={admin},optid={adminid}'},autoScroll:false,editrecord:true,
 		submitparams:function(o,f){
 			return {groupnamess:o.getField('groupname').getRawValue()};
@@ -234,7 +236,11 @@ var panel = {
 				fieldLabel:'排序号',name:'sortPost',value:'0',minValue:0,xtype:'numberfield',width:'50%'
 			}]
 		},{
-			fieldLabel:'所在组',name:'groupnamePost',xtype:'checkcombo',editable:false,store:[['1','管理员']]
+			xtype: 'fieldcontainer',defaultType: 'textfield',layout:'hbox',items:[{
+				fieldLabel:'所在组',name:'groupnamePost',xtype:'checkcombo',editable:false,store:[['1','管理员']],width:'49%'
+			},{
+				fieldLabel:'微信号',name:'weixinidPost',width:'50%'
+			}]
 		},{
 			fieldLabel:''+bitian+'所属单位',name:'companyidPost',xtype:'rockcombo',url:'company',allowBlank: false,valuefields:'id',autoloadlist:true
 		}]

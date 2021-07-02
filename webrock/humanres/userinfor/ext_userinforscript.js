@@ -11,6 +11,7 @@ function btn(bo){
 }
 var panel= {
 	xtype:'rockgrid',tablename:'admin',searchtools:true,defaultorder:'sort',celleditbool:true,highsearchbool:true,
+	url:publicstore(mode,dir),storebeforeaction:'userinforbefre',
 	tbar:['->',{
 		text:'修改',icon:gicons('user_edit'),disabled:true,id:'edit_'+rand+'',handler:function(){clickedit()}
 	}],
@@ -34,33 +35,33 @@ var panel= {
 		xtype: 'rownumberer',
 		width: 40
 	},{
-		text:'姓名',dataIndex:'name',width:60,search:true
+		text:'姓名',dataIndex:'name',width:'6%',search:true
 	},{
-		text:'用户名',dataIndex:'user',width:100,search:true
+		text:'用户名',dataIndex:'user',width:'8%',search:true
 	},{
-		text:'指纹号',dataIndex:'finge',width:80,search:true,editor:'textfield'
+		text:'指纹号',dataIndex:'finge',width:'8%',search:true,editor:'textfield'
 	},{
-		text:'部门',dataIndex:'deptname',width:80,autowidth:true,search:true
+		text:'部门',dataIndex:'deptname',flex:1,search:true
 	},{
-		text:'职位',dataIndex:'ranking',width:80,autowidth:true,search:true
+		text:'职位',dataIndex:'ranking',width:'8%',search:true
 	},{
-		text:'性别',dataIndex:'gender',width:50,search:true
+		text:'性别',dataIndex:'gender',width:'5%',search:true
 	},{
-		text:'入职时间',dataIndex:'workdate',width:100,autowidth:true,search:true,editor:'rockdate'
+		text:'入职时间',dataIndex:'workdate',width:'8%',search:true,editor:'rockdate'
 	},{
-		text:'直属上级',dataIndex:'superman',width:80,search:true
+		text:'直属上级',dataIndex:'superman',width:'8%',search:true
 	},{
-		text:'人员状态',dataIndex:'state',width:80,search:false,atype:'select',editor:{xtype:'combo',store:public.userstate,editable:false},renderer:function(v, m){
+		text:'人员状态',dataIndex:'state',width:'8%',search:false,atype:'select',editor:{xtype:'combo',store:public.userstate,editable:false},renderer:function(v, m){
 			if(isempt(v))return '<font color=red>未选</font>';
 			var val = public.userstate[v][1];
 			return val;
 		}
 	},{
-		text:'学历',dataIndex:'xueli',width:80,search:true
+		text:'学历',dataIndex:'xueli',width:'8%',search:true
 	},{
-		text:'生日',atype:'date',dataIndex:'birthday',width:100,search:true,editor:'rockdate'
+		text:'生日',atype:'date',dataIndex:'birthday',width:'8%',search:true,editor:'rockdate'
 	},{
-		text:'离职日期',atype:'date',dataIndex:'quitdt',width:100,search:true,editor:'rockdate'
+		text:'离职日期',atype:'date',dataIndex:'quitdt',width:'8%',search:true,editor:'rockdate'
 	}],
 	beforeload:function(){
 		btn(true);

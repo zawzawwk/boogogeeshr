@@ -23,8 +23,7 @@ homeitems.gong = {
 		}
 	}],
 	dblclick:function(o, r){
-		var url = js.getajaxurl('$gong','view','taskrun',{uid:adminid,id:r.data.id,jmbool:true});
-		js.open(url, 800);
+		mopenview('gong',r.data.id,'','',{notitle:'true'});
 	},
 	load:function(){
 		var to = this.getData('wdtotal');

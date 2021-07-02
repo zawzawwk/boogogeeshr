@@ -1,6 +1,14 @@
 <?php
 class userinforClassAction extends Action
 {
+	
+	public function userinforbefre($table)
+	{
+		return array(
+			'fields' => 'id,user,name,finge,deptid,deptname,ranking,gender,workdate,superman,state,xueli,birthday,quitdt'
+		);
+	}
+	
 	//合同的
 	public function contractuserbeifre($tables)
 	{
@@ -34,8 +42,10 @@ class userinforClassAction extends Action
 	
 	public function loadinforAjax()
 	{
-		$id 	= $this->rock->request('id');
+		$id 	= $this->request('id','',1);
+		$id 	= substr($id,1,-1);
 		$rows	= m('admin')->getone($id);
+		unset($rows['pass']);
 		$arr	= array(
 			'data' => $rows,
 			'work'	=> m('userjl')->getall("`atype`='work' and `uid`='$id' order by `startdt` asc"),

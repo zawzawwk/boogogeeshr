@@ -1,7 +1,7 @@
 <?php 
 /**
 	OA后台主文件入口
-	主页：http://www.xh829.com
+	主页：http://www.rockoa.com
 	交流QQ群：429403774
 	说明：免费开源软件，欢迎学习研究使用
 	作者：雨中磐石(rainrock)

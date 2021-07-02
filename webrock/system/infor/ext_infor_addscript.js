@@ -32,13 +32,15 @@ var panel= {
 			value:'',name:'typenamePost',hidden:true
 		},{
 			xtype: 'fieldcontainer',layout:'hbox',items:[{
-				fieldLabel:''+bitian+'信息类型',name:'typenumPost',allowBlank: false,xtype:'optioncombo',optionmnum:typenum,width:'49%',editable:true,valuefields:'num',autoloadlist:true,showlevel:2
+				fieldLabel:''+bitian+'信息类型',name:'typenumPost',allowBlank: false,xtype:'optioncombo',optionmnum:typenum,width:'35%',editable:true,valuefields:'num',autoloadlist:true,showlevel:2
 			},{
 				name:'faobjidPost',id:'faobjid_'+rand+'',xtype:'textfield',hidden:true
 			},{
-				fieldLabel:'发布给',nameidfields:'faobjid_'+rand+'',name:'faobjnamePost',xtype:'changedeptuser',changetitle:'选择接收对象',changetype:'deptusercheckall',width:'38%'
+				fieldLabel:'发布给',nameidfields:'faobjid_'+rand+'',name:'faobjnamePost',xtype:'changedeptuser',changetitle:'选择接收对象',changetype:'deptusercheckall',width:'40%'
 			},{
 				hideLabel:true,name:'isreimPost',xtype:'checkboxfield',boxLabel:'REIM推送',width:'12%',inputValue:'1',labelSeparator:'',margin:'0 0 0 10'
+			},{
+				hideLabel:true,name:'isweixinPost',xtype:'checkboxfield',boxLabel:'微信推送',width:'12%',inputValue:'1',labelSeparator:'',margin:'0 0 0 10'
 			}]
 		},{
 			fieldLabel:''+bitian+'主题',name:'titlePost',allowBlank: false

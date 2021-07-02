@@ -145,7 +145,10 @@ class indexClassAction extends Action{
 		$gasql	= " ( id in( select `sid` from `[Q]sjoin` where `type`='ug' and `mid`='$uid') or id in( select `mid` from `[Q]sjoin` where `type`='gu' and `sid`='$uid') )";//用户所在组id
 		$gsql	= "select `id` from `[Q]group` where $gasql ";
 		$owhe	= " and (`id` in(select `sid` from `[Q]sjoin` where ((`type`='um' and `mid`='$uid') or (`type`='gm' and `mid` in($gsql) ) ) ) or `id` in(select `mid` from `[Q]sjoin` where ((`type`='mu' and `sid`='$uid') or (`type`='mg' and `sid` in($gsql) )) ))";
-		if($this->db->rows('`[Q]group`',"`ispir`=0 and $gasql")>0)$owhe=''; 	//不用权限验证的用户
+		if($this->db->rows('`[Q]group`',"`ispir`=0 and $gasql")>0){	//不用权限验证的用户
+			$owhe=''; 
+			return $guid;
+		}
 		$guid	= '[0]';
 		if($owhe != ''){
 			$arss	= $this->db->getall("select `id`,`pid`,(select `pid` from `[Q]menu` where `id`=a.`pid`)as `mpid` from `[Q]menu` a where (`status` =1 $owhe) or (`status` =1 and `ispir`=0) order by `sort`");
@@ -169,12 +172,16 @@ class indexClassAction extends Action{
 	public function testAction()
 	{
 		$this->display = false;
+		//$con = c('curl')->getcurl('https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=ACCESS_TOKEN');
+		//echo $con;
+		/*
 		$arr = m('weixin:index')->sendnews('1', '今日会议', array(
 			'title' => '会议',
 			'description' => "参会人：开发部门\n时间：09:00-12:00",
 			'url'	=> 'http://m.rockoa.com/meet.html'
 		));
 		print_r($arr);
+		*/
 	}
 	
 	

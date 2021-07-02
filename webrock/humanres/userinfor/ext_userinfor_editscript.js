@@ -6,7 +6,7 @@ var aabcccc = {work:['公司/单位','岗位'],edu:['学校名','学历/专业']
 
 function loadinfor(){
 	form.setmsg('加载信息...','blue');
-	$.get(js.getajaxurl('loadinfor', mode, dir,{id:uid}), function(da){
+	$.get(js.getajaxurl('loadinfor', mode, dir,{id:jm.encrypt('['+uid+']')}), function(da){
 		form.setmsg('');
 		var a= js.decode(da);
 		showdata(a.data);

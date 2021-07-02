@@ -41,6 +41,7 @@ class flowClassAction extends Action{
 		$uid		= $this->jm->gettoken('uid');
 		$modenum	= $this->jm->gettoken('modenum');
 		$table		= $this->jm->gettoken('table');
+		$notitle	= $this->jm->gettoken('notitle');
 		$mid		= $this->jm->gettoken('mid');
 		$dbs 		= m('flowlog');
 		$modenum	= $dbs->getmodenum($table, $mid, $modenum);
@@ -53,12 +54,18 @@ class flowClassAction extends Action{
 		$this->title					= $flow->flowname;
 		$this->smartydata['content']	= $flow->contentview();
 		
-		//判断是不是我审核
 		$table 		= $flow->table;
 		$arr		= $dbs->getdatalog($modenum, $table, $mid, $uid);
 		$this->smartydata['arr']		= $arr;
 		$this->smartydata['urs']		= m('admin')->getall("`id` in($uid) order by `sort`",'`id`,`name`,`ranking`');
 		$this->smartydata['inputrs']	= $arr['inputrs'];
+		$this->smartydata['notitle']	= $notitle;
+		$torsk	= $this->get('rocktoken','',1);
+		if($torsk!=''){
+			$torsk=$this->jm->encrypt(str_replace('a=view','a=print', $torsk));
+			foreach($_GET as $k=>$v)if($k!='rocktoken')$torsk.='&'.$k.'='.$v.'';
+		}
+		$this->smartydata['printurl']	= $torsk;
 	}
 	
 	public function printAction()
@@ -68,6 +75,7 @@ class flowClassAction extends Action{
 		$modenum	= $this->jm->gettoken('modenum');
 		$table		= $this->jm->gettoken('table');
 		$mid		= $this->jm->gettoken('mid');
+		$notitle	= $this->jm->gettoken('notitle');
 		$dbs 		= m('flowlog');
 		$modenum	= $dbs->getmodenum($table, $mid, $modenum);
 		if($modenum == '' || $mid=='')exit('not found data');
@@ -78,6 +86,13 @@ class flowClassAction extends Action{
 		
 		$this->title					= $flow->flowname;
 		$this->smartydata['content']	= $flow->contentview('print');
+		$this->smartydata['notitle']	= $notitle;
+		$torsk	= $this->get('rocktoken','',1);
+		if($torsk!=''){
+			$torsk=$this->jm->encrypt(str_replace('a=print','a=word', $torsk));
+			foreach($_GET as $k=>$v)if($k!='rocktoken')$torsk.='&'.$k.'='.$v.'';
+		}
+		$this->smartydata['wordurl']	= $torsk;
 	}
 	
 	public function wordAction()

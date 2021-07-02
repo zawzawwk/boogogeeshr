@@ -217,7 +217,7 @@ var im = {
 		this.dingshilas();
 	},
 	dingshila:function(){
-		var dsurl = js.getajaxurl('dingshiup','index','webim',{aid:adminid});
+		var dsurl = js.getajaxurl('dingshiup','index','webim',{aid:adminid,token:admintoken});
 		$.get(dsurl);
 		this.dingshilas();
 	},
@@ -225,7 +225,7 @@ var im = {
 		setTimeout('im.dingshila()', 10*60*1000);
 	},
 	loadinit:function(){
-		var url = js.getajaxurl('loadinit','index','webim',{aid:adminid});
+		var url = js.getajaxurl('loadinit','index','webim',{aid:adminid,token:admintoken});
 		$.get(url, function(da){
 			var a = js.decode(da);
 			maindata = a;

@@ -13,8 +13,7 @@ var typenum = 'infortype';
 if(atype!=0){
 	typenum = 'infortype_dept_'+admindeptnum+'';
 	atype = admindeptid;
-}	
-
+}
 var panel= [{
 	xtype:'rocktree',tablename:'option',region:'west',width:170,split:true,bbarbool:false,title:'信息类型',collapsible: true,url:publictreestore({order:'xu',expandall:'true',pidfields:'mnum',idfields:'num',fistid:typenum}),
 	columns:[{
@@ -50,23 +49,28 @@ var panel= [{
 		xtype: 'rownumberer',
 		width: 40
 	},{
-		text:'类型',dataIndex:'typename',width:100,search:true,editor:'textfield',autowidth:true
+		text:'类型',dataIndex:'typename',width:'10%',search:true,editor:'textfield'
 	},{
 		text:'标题',dataIndex:'title',align:'left',search:true,flex:1
 	},{
-		text:'序号',dataIndex:'xu',width:60,search:true,editor:{xtype:'numberfield',minValue:0}
+		text:'序号',dataIndex:'xu',width:'6%',search:true,editor:{xtype:'numberfield',minValue:0}
 	},{
-		text:'显示首页',dataIndex:'isshow',width:80,renderer:renderbox,editor:{xtype:'combo',store:[['1','显示'],['0','不显示']]},search:true,atype:'select'
+		text:'显示首页',dataIndex:'isshow',width:'8%',renderer:renderbox,editor:{xtype:'combo',store:[['1','显示'],['0','不显示']]},search:true,atype:'select'
 	},{
-		text:'操作人',dataIndex:'optname',width:70,search:true
+		text:'操作人',dataIndex:'optname',width:'7%',search:true
 	},{
 		text:'发布者/部门',dataIndex:'zuozhe',search:true,autowidth:true
 	},{
-		text:'时间',dataIndex:'indate',search:true,autowidth:true
+		text:'时间',dataIndex:'indate',width:100,search:true,renderer:function(v){
+			if(isempt(v))v='';
+			return v.replace(' ','<br>');
+		}
 	},{
-		text:'发布给',dataIndex:'faobjname',search:true,autowidth:true
+		text:'发布给',dataIndex:'faobjname',search:true,width:'10%'
 	},{
-		text:'操作时间',dataIndex:'optdt',width:150,search:true
+		text:'操作时间',dataIndex:'optdt',width:100,search:true,sortable:true,renderer:function(v){
+			return v.replace(' ','<br>');
+		}
 	}],
 	beforeload:function(){
 		btn(true);
@@ -75,8 +79,7 @@ var panel= [{
 		btn(false);
 	},
 	dblclick:function(o, r){
-		var url = js.getajaxurl('$gong','view','taskrun',{uid:adminid,id:r.data.id,jmbool:true});
-		js.open(url, 800);
+		mopenview('gong',r.data.id,'','',{notitle:'true'});
 	}
 }];
 

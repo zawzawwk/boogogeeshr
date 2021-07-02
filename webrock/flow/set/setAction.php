@@ -1,6 +1,13 @@
 <?php
 class setClassAction extends Action
 {
+	
+	public function pandtablelabefore($table, $cans)
+	{
+		$s = '';
+		if($this->contain(URL, 'demo.'))$s='演示系统请不要修改,谢谢';
+		return $s;
+	}
 
 	public function savefieldsAjax()
 	{
@@ -13,7 +20,7 @@ class setClassAction extends Action
 	
 	public function pipeiAjax()
 	{
-		$sid 	= $this->post('id');
+		$sid 	= $this->request('id');
 		$rows	= m('flow_set')->getall("`id` in($sid) and `isflow`=1 and `table` is not null order by `sort`", 'num');
 		$str	= '';
 		$mess	= '';//邮件内容

@@ -16,7 +16,7 @@ class adminClassAction extends Action
 	public function publicstoreBefore($table)
 	{
 		return array(
-			'fields' => 'id,user,name,tel,email,status,groupname,gender,mobile,type,ranking,superman,superid,deptid,deptname,sort,quitdt,status,type,state,workdate,isdaily,isvcard,positivedt,syenddt,companyid'
+			'fields' => 'id,user,name,tel,email,status,groupname,gender,mobile,type,ranking,superman,superid,deptid,deptname,sort,quitdt,status,type,state,workdate,isdaily,isvcard,positivedt,syenddt,companyid,weixinid'
 		);
 	}
 	

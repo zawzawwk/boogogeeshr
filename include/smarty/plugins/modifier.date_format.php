@@ -60,6 +60,5 @@ function smarty_modifier_date_format($string, $format=null, $default_date='', $f
     } else {
         return date($format, $timestamp);
     }
-} 
-
+}
 ?>

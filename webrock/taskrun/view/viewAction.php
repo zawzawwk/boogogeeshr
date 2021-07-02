@@ -1,9 +1,5 @@
 <?php 
 class viewClassAction extends Action{
-	
-	/**
-		通知公告
-	*/
 	public function gongAction()
 	{
 		$this->tpltype = 'html';
@@ -17,9 +13,6 @@ class viewClassAction extends Action{
 		m('log')->addread('infor', $id);
 	}
 
-	/**
-		工作任务
-	*/
 	public function workAction()
 	{
 		$this->tpltype = 'html';
@@ -38,9 +31,6 @@ class viewClassAction extends Action{
 		$this->smartydata['rsbg']	= $rsbg;
 	}
 	
-	/**
-		项目
-	*/
 	public function projectAction()
 	{
 		$this->tpltype = 'html';
@@ -59,10 +49,6 @@ class viewClassAction extends Action{
 		$this->smartydata['rsbg']	= $rsbg;
 	}
 	
-	
-	/**
-		内部邮件
-	*/
 	public function emailinAction()
 	{
 		$this->tpltype = 'html';

@@ -40,8 +40,8 @@ class whereClassAction extends Action{
 	public function getfieldAjax()
 	{
 		$db		= m('where');
-		$table	= $this->rock->post('table');
-		$mnum	= $this->rock->post('mnum');
+		$table	= $this->post('table','',1);
+		$mnum	= $this->post('mnum');
 		$istype	= (int)$this->rock->post('istype');
 		$arr	= $this->db->gettablefields($this->T($table));
 		$uarr	= array();

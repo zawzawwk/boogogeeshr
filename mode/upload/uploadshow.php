@@ -4,12 +4,13 @@ $id	= (int)$rock->get('id','0');
 if($id==0)exit('Sorry!');
 $db	= import(DB_DRIVE);
 $rs	= $db->getone('[Q]file', "`id`='$id'");
-if(!$rs)exit('Not find files');
+if(!$rs)exit('504 Not find files');
 $db->update('[Q]file', "`downci`=`downci`+1" ,"`id`='$id'");
 
 $filepath	= '../../'.$rs['filepath'];
-if(!file_exists($filepath))exit('Not find files');
+if(!file_exists($filepath))exit('404 Not find files');
 $filename	= $rs['filename'];
+$filesize 	= $rs['filesize'];
 if(substr($filepath,-4)=='temp'){
 	header('Content-type:application/vnd.ms-excel');
 	header('Content-type: text/plain');

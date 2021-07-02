@@ -189,11 +189,27 @@ class adminClassModel extends Model
 	*/
 	public function getonline($receid, $lx=15)
 	{
-		$dts 		= c('date')->adddate($this->rock->now,'i', 0-$lx);
-		$wheres		= '';
-		if($receid != 'all')$wheres=" and `id` in($receid)";
-		$jonus 		= $jiesid = $this->db->getjoinval('[Q]admin','id', "`status`=1 and `state`<>5 and `imlastdt`>'$dts' $wheres");
+		$uarr 		= $this->getonlines('reim', $receid, $lx);
+		$jonus		= join(',', $uarr);
 		return $jonus;
+	}
+	
+	//获取对应类型在线人员
+	public function getonlines($type, $teuid='all', $lx=11, $where='')
+	{
+		$dts 	= c('date')->adddate($this->rock->now, 'i', 0-$lx);
+		$wheres		= '';
+		if($teuid != 'all' && $teuid!='')$wheres=" and `uid` in($teuid)";
+		if($lx>0){
+			$wheres .= " and `moddt`>'$dts'";
+		}
+		$sql 	= "select `uid`,max(`online`)online from `[Q]logintoken` where `cfrom`='$type' $wheres $where group by `uid`";
+		$arrs 	= array();
+		$rows   = $this->db->getall($sql);
+		foreach($rows as $k=>$rs){
+			if($rs['online']==1)$arrs[] = $rs['uid'];
+		}
+		return $arrs;
 	}
 	
 	/**
@@ -201,7 +217,12 @@ class adminClassModel extends Model
 	*/
 	public function getwxuser()
 	{
-		$arows	= $this->getall('`status`=1 and `state`<>5 and `iswx`=1', '`id`,`user`,`face`,`name`');
+		$uarrs 	= $this->getonlines('weixin','all', 0);
+		$sid 	= join(',', $uarrs);
+		$arows	= array();
+		if($sid!=''){
+			$arows	= $this->getall('`id` in ('.$sid.') and  `status`=1 and `state`<>5', '`id`,`user`,`face`,`name`');
+		}
 		return $arows;
 	}
 }

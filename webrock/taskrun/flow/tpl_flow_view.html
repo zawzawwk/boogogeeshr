@@ -24,7 +24,6 @@ function initbody(){
 			return false;
 		}
 	});
-	if(js.request('rocktoken'))$('#printdiv').hide();
 }
 
 function check(o1){
@@ -71,12 +70,9 @@ function openupload(){
 	return false;
 }
 function openprint(){
-	var as = js.request('rocktoken'),bs,url='';
+	var as = '<?=$da['printurl']?>',bs,url='';
 	if(as){
-		bs = jm.uncrypt(as);
-		bs = bs.replace('a=view','a=print');
-		bs = jm.encrypt(bs);
-		url = ''+js.path+'.php?rocktoken='+bs+'';
+		url = ''+js.path+'.php?rocktoken='+as+'';
 	}else{
 		url = location.href;
 		url = url.replace('a=view','a=print');
@@ -86,7 +82,6 @@ function openprint(){
 </script>
 <style>
 .table{font-size:14px;}
-
 .tdcont{padding:0px 5%}
 .tdcont p{padding:3px 5px}
 .table .tdys1{padding:5px 5px;border:1px #888888 solid;text-align:right;width:100px}
@@ -98,6 +93,10 @@ function openprint(){
 .ys2{padding:0px 5px; border:1px #000000 solid}
 .ys1{padding:0px 5px; border:1px #000000 solid}
 .ys0{border:1px #000000 solid}
+.ydullist{display:inline-block;width:100%}
+.ydullist li{float:left;width:20%;text-align:left;padding:5px 0px;font-size:12px}
+.ydullist li img{height:24px;width:24px;margin-right:3px;}
+.ydullist li span{font-size:10px;color:#888888}
 </style>
 </head>
 <body style="padding:15px">
@@ -109,12 +108,16 @@ function openprint(){
 </div>
 
 <div style="width:750px">
-	<div style="padding-bottom:15px;font-size:30px"><?=$da['title']?></div>
+	<?php 
+	if($da['notitle']!='true'){
+		echo '<div style="padding-bottom:15px;font-size:30px">'.$da['title'].'</div>'; 
+	}
+	?>
 	<div class="tdcont" align="left">
 		<?=$da['content']?>
 	</div>
 	<?php if($da['arr']['isflow']==1){?>
-	<div align="left" style="padding-top:20px;padding-bottom:5px"><b>操作记录</b></div>
+	<div align="left" style="padding-top:20px;padding-bottom:5px"><b>操作记录(<?=count($da['arr']['logarr'])?>)</b></div>
 	<div>
 		<table border="0"  class="tabled2" style="border-collapse:collapse;" width="100%" cellspacing="0" cellpadding="0">
 		<tr bgcolor="#D2E9FF">
@@ -205,7 +208,7 @@ function openprint(){
 				echo '<label><input type="checkbox" name="check_nextchangeid" value="'.$us['nameid'].'"> '.$us['name'].'</label>&nbsp; &nbsp; ';
 			}
 			?>
-			<div></td>
+			</div></td>
 		<?php }?>
 		
 		<?php
@@ -250,6 +253,13 @@ function openprint(){
 	</div>
 	
 	<?php }?>
+	<div align="left" style="padding-top:20px;padding-bottom:5px"><b>查阅记录(<?=count($da['arr']['readarr'])?>)</b></div>
+	<div><ul class="ydullist"><?php
+		foreach($da['arr']['readarr'] as $k=>$rs){
+			echo '<li><img src="'.$rs['face'].'" align="absmiddle">'.$rs['name'].'<span>('.substr($rs['optdt'],5,11).')</span></li>';
+		}
+	?></ul></div>
+	<div class="blank10"></div>
 </div>	
 </div>
 <script>

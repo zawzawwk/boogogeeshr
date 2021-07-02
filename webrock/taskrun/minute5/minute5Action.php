@@ -17,7 +17,7 @@ class minute5ClassAction extends Action{
 	private function meettodo()
 	{
 		$db		= m('meet');
-		$rows 	= $db->getall("`state` in(0,1) and `type`=0 and `status`=1");
+		$rows 	= $db->getall("`state` in(0,1) and `type`=0 and `startdt` like '".$this->date."%' and `status`=1");
 		$time	= time();
 		$todo	= m('todo');
 		$adm	= m('admin');
