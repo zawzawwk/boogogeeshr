@@ -6,7 +6,6 @@
 	说明：免费开源软件，欢迎学习研究使用
 	作者：雨中磐石(rainrock)
 */
-
 define('PROJECT', 'webrock');
 include_once('config/config.php');
 $islogin	= (int)$rock->session(QOM.'adminid',0);
