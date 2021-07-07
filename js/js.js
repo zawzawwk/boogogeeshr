@@ -247,12 +247,13 @@ js.setdev=function(val,dev){
 	if(isempt(cv))cv=dev;
 	return cv;
 }
-js.upload=function(call,can){
+js.upload=function(call,can, glx){
 	if(!call)call='';
 	if(!can)can={};
 	js.uploadrand	= js.now('YmdHis')+parseInt(Math.random()*999999);
 	var url = 'mode/upload/upload.php?callback='+call+'&upkey='+js.uploadrand+'&p='+PROJECT+'';
 	for(var a in can)url+='&'+a+'='+can[a]+'';
+	if(glx=='url')return url;
 	js.open(url,500,300);
 	return false;
 }
