@@ -1,8 +1,8 @@
 <?php
 include_once('../../config/config.php');
-
-$upfile = c('upfile',true,'jpg|png|gif|jpeg','../../upload|'.date('Y-m').'', 2);
-
+if($rock->adminid==0)exit('not sign');
+$upfile = c('upfile');
+$upfile->initupfile('jpg|png|gif|jpeg','../../upload|'.date('Y-m').'', 5);
 $upses	= $upfile->up('imgFile');
 if(is_array($upses)){
 	$url = $upses['allfilename'];
