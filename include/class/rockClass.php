@@ -12,7 +12,6 @@
 */ 
 final class rockClass
 {
-	
 	public $ip;
 	public $host;
 	public $url;
@@ -30,15 +29,16 @@ final class rockClass
 
 	public function __construct()
 	{		
-		$this->ip		= $_SERVER['REMOTE_ADDR'];
-		$this->host		= $_SERVER['HTTP_HOST'];
+		$this->ip		= isset($_SERVER['REMOTE_ADDR'])	? $_SERVER['REMOTE_ADDR']	: '' ;
+		$this->host		= isset($_SERVER['HTTP_HOST'])		? $_SERVER['HTTP_HOST']		: '' ;
 		$this->url		= '';
 		$this->win		=  php_uname();
-		$this->web		= isset($_SERVER['HTTP_USER_AGENT'])	? $_SERVER['HTTP_USER_AGENT']	: '' ;
+		$this->web		= isset($_SERVER['HTTP_USER_AGENT'])? $_SERVER['HTTP_USER_AGENT']	: '' ;
 		$this->web		= $this->getbrowser($this->web);
 		$this->unarr	= explode(',','1,2');
 		$this->now		= $this->now();
 		$this->date		= date('Y-m-d');
+		$this->lvlaras  = explode(',','select ,alter table,delete ,drop ,update ,insert into');
 	}
 	
 	public function initRock()
@@ -99,7 +99,24 @@ final class rockClass
 		}
 		$s=str_replace("'", '&#39', $s);
 		if($lx==2)$s=str_replace(array('{','}'), array('[H1]','[H2]'), $s);
+		$str = strtolower($s);
+		foreach($this->lvlaras as $v1)if($this->contain($str, $v1)){
+			if(DEBUG)$this->debug(''.$na.'《'.$s.'》error:包含非法字符《'.$v1.'》','params');
+			$s = str_replace($v1,'', $str);
+			//exit(''.$na.' invalid params');
+		}
 		return $s;
+	}
+	
+	public function debug($txt, $lx)
+	{
+		$_dt 	= date('Y-m');
+		$fdir	= ''.ROOT_PATH.'/upload/'.$_dt.'';
+		if(!file_exists($fdir))mkdir($fdir);
+$txt	= ''.$txt.'
+URL：'.$_SERVER['QUERY_STRING'].'
+';
+		$this->createtxt('upload/'.$_dt.'/'.$lx.''.date('YmdHis').'_'.rand(1000,9000).'.log', $txt);
 	}
 	
 	private function isjm($s)
@@ -377,7 +394,7 @@ final class rockClass
 	public function getcai($content,$start,$end)
 	{
 		$geju = strpos($content,$start);
-		if(!$geju){
+		if($geju===false){
 			$cont1='';
 		}else{
 			$stard	= $geju+strlen($start);
@@ -398,7 +415,8 @@ final class rockClass
 		@$file	= fopen($path,'w');
 		$bo 	= false;
 		if($file){
-			$bo = fwrite($file,$txt);
+			$bo = true;
+			if($txt)$bo = fwrite($file,$txt);
 			fclose($file);
 		}
 		return $bo;

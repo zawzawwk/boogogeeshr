@@ -6,7 +6,6 @@
 //date_default_timezone_set("PRC");
 header('Content-Type:text/html;charset=utf-8');
 define('ROOT_PATH',str_replace('\\','/',dirname(dirname(__FILE__))));
-define('HOST', $_SERVER['HTTP_HOST']);
 define('DEBUG', true);
 include_once(''.ROOT_PATH.'/include/rockFun.php');
 include_once(''.ROOT_PATH.'/include/Chajian.php');
@@ -14,12 +13,14 @@ include_once(''.ROOT_PATH.'/include/class/rockClass.php');
 $rock 		= new rockClass();
 $db			= null;		
 $smarty		= false;
+define('HOST', $rock->host);
 define('REWRITE', 'true');
 if(!defined('PROJECT'))define('PROJECT', $rock->get('p', 'webrock'));
 
 $config		= array(
 	'title'		=> 'RockOA',
 	'url'		=> 'http://'.HOST.'/rock/',
+	'localurl'	=> '',		//本地地址配置
 	'urly'		=> 'http://demo.rockoa.com/',
 	'db_host'	=> 'sr0qk0oq0kjp0rs0rq0klj0kkk0sr0ok0qr0nr09',
 	'db_user'	=> '',

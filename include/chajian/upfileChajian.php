@@ -106,6 +106,13 @@ class upfileChajian extends Chajian{
 		
 		if($upbool){
 			$picw=0;$pich=0;
+			if($file_img){
+				list($picw,$pich)	= getimagesize($allfilename);
+				if($picw==0||$pich==0){
+					unlink($allfilename);
+					return 'error:非法图片文件';
+				}
+			}
 			return array(
 				'newfilename' => $file_newname,
 				'oldfilename' => $file_name,

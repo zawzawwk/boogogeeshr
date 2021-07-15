@@ -10,6 +10,7 @@
 	* 备  注: 未经允许不得商业出售，代码欢迎参考纠正				*
 	*****************************************************************
 */ 
+if(!defined('HOST'))exit('not access');
 abstract class mysql{
 	
 	public $conn		= null; 
@@ -109,13 +110,8 @@ abstract class mysql{
 		$this->nowerror	= false;
 		if(!$rsbool)$this->nowerror = true;
 		if(!$rsbool && DEBUG && $ebo){
-			$_dt 	= date('Y-m');
-			$fdir	= ''.ROOT_PATH.'/upload/'.$_dt.'';
-			if(!file_exists($fdir))mkdir($fdir);
-			$txt	= ''.D.'/'.M.'/'.A.',[错误SQL]：《'.$sql.'》----------原因：'.$this->error().'
-地址：'.$_SERVER['QUERY_STRING'].'
-';
-			$this->rock->createtxt('upload/'.$_dt.'/mysql'.date('YmdHis').'_'.rand(1000,9000).'.log', $txt);
+			$txt	= ''.D.'/'.M.'/'.A.',[错误SQL]：《'.$sql.'》----------原因：'.$this->error().'';
+			$this->rock->debug($txt,'mysql');
 		}
 		return $rsbool;
 	}
@@ -484,9 +480,10 @@ abstract class mysql{
 		return $arr;
 	}
 	
-	public function gettablefields($table)
+	public function gettablefields($table, $base='')
 	{
-		$sql	= "select COLUMN_NAME as `name`,DATA_TYPE as `type`,COLUMN_COMMENT as `explain`,COLUMN_TYPE as `types`,`COLUMN_DEFAULT` as dev from information_schema.COLUMNS where `TABLE_NAME`='$table' and `TABLE_SCHEMA` ='$this->db_base' order by `ORDINAL_POSITION`";
+		if($base=='')$base = $this->db_base;
+		$sql	= "select COLUMN_NAME as `name`,DATA_TYPE as `type`,COLUMN_COMMENT as `explain`,COLUMN_TYPE as `types`,`COLUMN_DEFAULT` as dev from information_schema.COLUMNS where `TABLE_NAME`='$table' and `TABLE_SCHEMA` ='$base' order by `ORDINAL_POSITION`";
 		return $this->getall($sql);
 	}
 	

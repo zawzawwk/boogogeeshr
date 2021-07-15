@@ -163,10 +163,14 @@ js.open=function(url,w,h,wina,can){
 	url+=''+ja+'opennew=true';
 	if(!w)w=600;
 	if(!h)h=500;
-	if(!can)can='resizable=yes,scrollbars=yes';
 	var l=(screen.width-w)*0.5;
 	var t=(screen.height-h)*0.5;
-	var opar=window.open(url,'','width='+w+'px,height='+h+'px,left='+l+'px,top='+t+'px,'+can+'');
+	if(!can)can={};
+	var s='resizable=yes,scrollbars=yes,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no';
+	var a1={'left':''+l+'px','top':''+t+'px','width':''+w+'px','height':''+h+'px'};
+	a1 = js.apply(a1,can);
+	for(var o1 in a1)s+=','+o1+'='+a1[o1]+'';
+	var opar=window.open(url,'',s);
 	if(wina)this.openarr[wina]=opar;
 	return opar;
 }

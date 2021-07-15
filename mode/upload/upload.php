@@ -30,6 +30,7 @@ var mkdir	= '<?=date('Y-m')?>',
 	thumbnail = '<?=$thumbnail?>',
 	maxwidth  = '<?=$maxwidth?>',
 	showid  	= '<?=$showid?>',
+	upkey  	= '<?=$upkey?>',
 	thumbtype  = '<?=$thumbtype?>';//缩略图类型0可能去掉看不到的默认， 1整图缩略可以看到白
 var up={
 	reader:false,
@@ -49,12 +50,9 @@ var up={
 			$('body').prepend('<div style="color:red;padding:2px;border:1px #dddddd solid;margin:5px">对不起，您的浏览器不支持上传功能，请使用IE10+，火狐，Opera，谷歌浏览器</div>');
 		}
 		var bol	= true;
-		try{
-			if(parent.js.uploadrand!='<?=$upkey?>'){
-				bol=false;
-			}
-		}catch(e){
-			bol=false;
+		try{if(parent.js.uploadrand!=upkey){bol=false;}}catch(e){bol=false;}
+		if(!bol){
+			try{if(opener.js.uploadrand==upkey){bol=true;}}catch(e){}
 		}
 		if(!bol){
 			$('body').prepend('<div style="color:red;padding:2px;border:1px #dddddd solid;margin:5px">不正当访问本页面，不能操作</div>');
@@ -315,7 +313,8 @@ var up={
 		var sid = this.getsid(this.wcarr);
 		<?php if($callback!=''){?>try{parent.<?=$callback?>(this.wcarr,js.request('params1'), js.request('params2'), sid)}catch(e){}<?php }?>
 		if(showid!=''){
-			parent.js.downupshow(this.wcarr, showid, sid);
+			try{parent.js.downupshow(this.wcarr, showid, sid);}catch(e){}
+			try{opener.js.downupshow(this.wcarr, showid, sid);}catch(e){}
 		}
 		this.closeaa();
 	},
