@@ -1,0 +1,2 @@
+D/M/A,[错误SQL]：《delete from `rock_crm_customer`》----------原因：Table 'rockoa.rock_crm_customer' doesn't exist
+URL：act=initdbs

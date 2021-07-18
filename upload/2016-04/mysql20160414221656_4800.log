@@ -1,0 +1,2 @@
+D/M/A,[错误SQL]：《delete from `rock_wx_agent`》----------原因：Table 'rockoa.rock_wx_agent' doesn't exist
+URL：act=initdbs

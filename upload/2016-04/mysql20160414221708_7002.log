@@ -1,0 +1,2 @@
+D/M/A,[错误SQL]：《alter table `rock_crm_customer` AUTO_INCREMENT=1》----------原因：Table 'rockoa.rock_crm_customer' doesn't exist
+URL：act=initdbs

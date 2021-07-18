@@ -1,0 +1,20 @@
+﻿{
+	"main": "login.html",
+	"name": "webreim",
+	"description": "REIM即时通信",
+	"version": "0.1.0",
+	"window": {
+		"title": "REIM即时通信",
+		"icon": "images/logo.png",
+		"toolbar": false,
+		"frame": true,
+		"width": 260,
+		"height": 500,
+		"position": "center",
+		"min_width": 260,
+		"min_height": 500
+	},
+	"webkit": {
+		"plugin": true
+	}
+}
