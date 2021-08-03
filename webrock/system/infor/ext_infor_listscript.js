@@ -40,10 +40,12 @@ var panel= [{
 	}],
 	_clickedit:function(){
 		var sid = this.changedata.id;
-		addtabs('编辑信息','system,infor,add,id='+sid+',index='+index+',atype='+atype+'','inforadd_'+sid+'',{icon:gicons('edit')});
+		openiframe('编辑信息','gong,'+sid+'', {icon:gicons('edit')},{gridid:this.getId(),atype:atype});
+		//addtabs('编辑信息','system,infor,add,id='+sid+',index='+index+',atype='+atype+'','inforadd_'+sid+'',{icon:gicons('edit')});
 	},
 	_clickeadd:function(){
-		addtabs('信息新增','system,infor,add,index='+index+',atype='+atype+'','inforadd',{icon:gicons('add')});
+		openiframe('信息新增','gong', {icon:gicons('add')},{gridid:this.getId(),atype:atype});
+		//addtabs('信息新增','system,infor,add,index='+index+',atype='+atype+'','inforadd',{icon:gicons('add')});
 	},
 	columns:[{
 		xtype: 'rownumberer',

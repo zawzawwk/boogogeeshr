@@ -1,9 +1,9 @@
 var dt = js.now();
 var  panel = {
-	xtype:'rockgridform',tablename:'task',celleditbool:true,formtitle:'任务',iconqz:'time_',
+	xtype:'rockgridform',tablename:'task',defaultorder:'id',celleditbool:true,formtitle:'任务',iconqz:'time_',
 	url:publicstore(mode,dir),storeafteraction:'taskaftershow',
 	tbar:['->',{
-		text:'Win服务器安装定时任务bat文件',icon:gicons('arrow_down'),handler:function(){
+		text:'服务器安装定时任务方法',icon:gicons('arrow_down'),handler:function(){
 			this.up('grid')._taskdaonws(this);
 		}
 	},'-',{
@@ -19,7 +19,7 @@ var  panel = {
 		js.open(js.getajaxurl('downbat',mode,dir));
 	},
 	_taskrestart:function(o1){
-		var url = js.getajaxurl('reloadrun', 'base','taskrun');
+		var url = js.getajaxurl('reloadrun', 'base|atask','taskrun');
 		js.msg('wait','重启中...');
 		o1.setDisabled(true);
 		$.get(url, function(da){
@@ -36,7 +36,7 @@ var  panel = {
 		mid = d.id;
 		if(!mid)return;
 		a1 = d.url.split(',');
-		var url = js.getajaxurl(a1[1],a1[0],'taskrun',{mid:mid});
+		var url = js.getajaxurl(a1[1],a1[0]+'|atask','taskrun',{mid:mid});
 		js.msg('wait','运行中...');
 		$.get(url, function(da){
 			if(da=='success'){

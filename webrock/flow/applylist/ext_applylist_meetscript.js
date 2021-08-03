@@ -1,45 +1,20 @@
-var panel= {
-	xtype:'rockflowgrid',opentype:params.opentype,flownum:'meet',rand:rand,exceltitle:'会议室预定',
-	tablename:'meet',keywhere:'[A][K]a.type[D]0',defaultorder:'startdt desc',
-	formtitle:'会议室预定',formwidth:400,
-	columns:[{
-		xtype: 'rownumberer',
-		width: 40
-	},{
-		text:'发起人',align:'center',dataIndex:'name',width:90,search:true
-	},{
-		text:'会议室',dataIndex:'hyname',search:true,autowidth:true
-	},{
-		text:'主题',dataIndex:'title',search:true,autowidth:true
-	},{
-		text:'开始时间',align:'center',dataIndex:'startdt',width:160,search:true,atype:'date'
-	},{
-		text:'截止时间',align:'center',dataIndex:'enddt',width:160,search:true,atype:'date'
-	},{
-		text:'参会人员',dataIndex:'joinname',width:'10%',search:true,autowidth:true
-	},{
-		text:'申请状态',dataIndex:'status'
-	},{
-		text:'会议状态',dataIndex:'state',width:80,boxdata:[['green','正常'],['blue','会议中'],['#ff6600','结束'],['#888888','取消']],renderer:renderbox,atype:'select',search:true,store:js.arraystr('正常,会议中,结束,取消')
-	},{
-		text:'说明',align:'left',dataIndex:'explain',flex:1,sortable:false
-	}],
-	tbarcenter:[{
-		xtype:'datefield',format:'Y-m-d',id:'datess_'+rand+'',emptyText:'会议日期',width:120,editable:false
-	}],
-	outsearch:function(){
-		var s = '',
-			s1= getcmp('datess_'+rand+'').getRawValue();
-		if(!isempt(s1))s="[A][K]a.`startdt`[K]like[K]'"+s1+"%'";	
-		return s;
-	}
+/**
+*	模块【meet.会议预定】的列表展示页面，自定义区域内可写您想要的代码
+*	最后修改：2016-05-07 17:12:32
+*	创建人：管理员
+*/
+var otype = params.opentype;
+var panelauto={},returnarr={},panel= {
+	xtype:'rockflowgrid',opentype:otype,flownum:'meet',
+	tablename:'meet',defaultorder:'id desc',url:publiccheckstore('mode_meet|input','flow'),
+	formtitle:'会议预定',storeafteraction:'datalistafter',storebeforeaction:'datalistbefore',keywhere:jm.base64decode('IEFORCAgYS5gdHlwZWAgPSAnMCc:'),
+	columns:[{'xtype':'rownumberer','width':40},{'text':'申请人','dataIndex':'name','width':90,search:true},{'text':'所属部门','dataIndex':'deptname','autowidth':true,search:true},{'text':'会议室','dataIndex':'hyname','atype':'rockcombo','search':true},{'text':'主题','dataIndex':'title','atype':'text','search':true},{'text':'开始时间','dataIndex':'startdt','atype':'datetime','search':true,'width':155},{'text':'结束时间','dataIndex':'enddt','atype':'datetime','search':true,'width':155},{'text':'参会人员','dataIndex':'joinname','atype':'changedeptusercheck','search':false,flex:1},{'text':'状态','dataIndex':'status'}]
 };
+//[自定义区域start]
 
-return {
-	panel:panel,
-	tabson:{
-		show:function(){
-			rock[index].isReload();
-		}
-	}
-};
+
+
+//[自定义区域end]
+panel=js.apply(panel, panelauto);
+returnarr.panel=panel;
+return returnarr;

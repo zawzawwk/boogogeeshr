@@ -56,9 +56,15 @@ class fileClassModel extends Model
 		return $arr;
 	}
 	
-	public function delfile($sid)
+	public function delfiles($mtype, $mid)
 	{
-		$where 	= "`id` in ($sid)";
+		$this->delfile('',"`mtype`='$mtype' and `mid` in($mid)");
+	}
+	
+	public function delfile($sid='', $where='')
+	{
+		if($sid!='')$where = "`id` in ($sid)";
+		if($where=='')return;
 		$rows 	= $this->getall($where, 'filepath');
 		foreach($rows as $k=>$rs){
 			$path = ''.ROOT_PATH.'/'.$rs['filepath'].'';

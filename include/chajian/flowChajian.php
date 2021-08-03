@@ -9,6 +9,7 @@ class flowChajian extends Chajian{
 	public $flowname;
 	public $table;
 	public $id;
+	public $setid;
 	public $idtype;
 	public $rs;
 	public $mdb;
@@ -543,11 +544,18 @@ class flowChajian extends Chajian{
 	private $_fieldssel = array();
 	public function getfields()
 	{
-		$farr	= c('edit')->getfield($this->table, 1);
 		$arr	= array();
-		foreach($farr as $k=>$rs){
-			$arr[$k] = $rs['name'];
-			$this->_fieldssel[$k] = $rs['selarr'];
+		$farr 	= m('flow_element')->getall("`mid`='$this->setid' and `iszb`=0 and `iszs`=1",'fields,name','`sort`');
+		if($farr){
+			foreach($farr as $k=>$rs){
+				$arr[$rs['fields']]=$rs['name'];
+			}
+		}else{
+			$farr	= c('edit')->getfield($this->table, 1);
+			foreach($farr as $k=>$rs){
+				$arr[$k] = $rs['name'];
+				$this->_fieldssel[$k] = $rs['selarr'];
+			}
 		}
 		$arrs = $this->flowfields($arr);
 		if(is_array($arrs))$arr = $arrs;
@@ -589,7 +597,7 @@ class flowChajian extends Chajian{
 		if(!$this->isempt($cont)){
 			$s 	 = $this->rock->reparr($cont, $rows);
 		}else{
-			if($this->idtype==0)$s	 = c('html')->createtable($fields, $rows, $this->flowname, $lx);
+			if($this->idtype==0)$s = c('html')->createtable($fields, $rows, $this->flowname, $lx);
 		}
 		return $s;
 	}
@@ -627,10 +635,10 @@ class flowChajian extends Chajian{
 		$this->rs['check_explain'] = $sm;
 		if($wxtx==1)$wxurl	= m('option')->getval('weixin_url');
 		if($this->isempt($wxurl))$wxtx=0;
-		$imsendnae 	= '单据待办';
 		$zntitle 	= $this->flowname;
 		$apptitle 	= $this->flowname;
 		$agentname 	= ''.$this->flowname.',单据待办';
+		$imsendnae 	= $agentname;
 		$wxopenurl	= ''.$wxurl.'xiang.html?num='.$this->flownum.'&mid='.$this->id.'';
 		if($type == 'next'){
 			if($zntx==1){
@@ -646,7 +654,7 @@ class flowChajian extends Chajian{
 				$cont 	= $this->gettxsscont('imtx', 'zntx');
 				if(is_array($cont)){
 					if(isset($cont['cont']))$cont=$cont['cont'];
-					if(isset($cont['title']))$imsendnae=$cont['title'];
+					if(isset($cont['title']))$imsendnae=$cont['title'].','.$imsendnae.'';
 				}
 				if($cont=='')$cont= '单据处理<br>模块:'.$this->flowname.'<br>单号:'.$this->sericnum.'<br>申请人:'.$this->urs['name'].'<br>部门:'.$this->drs['name'].'';
 				if($sm!='')$cont .= '<br>说明:'.$sm.'';

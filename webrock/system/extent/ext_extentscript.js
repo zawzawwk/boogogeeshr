@@ -47,7 +47,7 @@ var user = {
 		xtype: 'rownumberer',
 		width: '8%'
 	},{
-		text:'姓名',dataIndex:'name',width:'20%',search:true
+		text:'姓名',dataIndex:'name',flex:1,search:true
 	},{
 		text:'部门',dataIndex:'deptname',width:'30%',search:true
 	},{
@@ -64,7 +64,7 @@ var group = {
 		xtype: 'rownumberer',
 		width: '10%'
 	},{
-		text:'组名',dataIndex:'name',width:'50%',menuDisabled:true
+		text:'组名',dataIndex:'name',flex:1,menuDisabled:true
 	},{
 		text:'验证',dataIndex:'ispir',width:'20%',renderer:renderbox,menuDisabled:true
 	}]
@@ -77,7 +77,7 @@ var menu = {
 	title:'菜单列表',id:'menulist_'+rand+'',collapsible: true,
 	columns:[{
 		xtype: 'treecolumn',
-		text:'名称',align:'left',dataIndex:'name',width:'50%',sortable:false
+		text:'名称',align:'left',dataIndex:'name',flex:1,sortable:false
 	},{
 		text:'编号',dataIndex:'num',width:'25%',sortable:false,align:'center'
 	},{

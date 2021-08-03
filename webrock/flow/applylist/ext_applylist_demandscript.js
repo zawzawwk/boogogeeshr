@@ -1,30 +1,20 @@
-var panel= {
-	xtype:'rockflowgrid',opentype:params.opentype,flownum:'demand',formtitle:'业务需求',
-	tablename:'demand',defaultorder:'id desc',
-	columns:[{
-		xtype: 'rownumberer',
-		width: 40
-	},{
-		text:'标题',dataIndex:'title',width:110,search:true,autowidth:true,align:'left'
-	},{
-		text:'申请人',dataIndex:'name',width:70,search:true
-	},{
-		text:'申请部门',dataIndex:'deptname',width:180,search:true
-	},{
-		text:'操作时间',dataIndex:'optdt',width:160,search:true,atype:'date'
-	},{
-		text:'状态',dataIndex:'status'
-	},{
-		text:'说明',align:'left',dataIndex:'explain',flex:1,sortable:false,search:true
-	}]
+/**
+*	模块【demand.业务需求】的列表展示页面，自定义区域内可写您想要的代码
+*	最后修改：2016-05-08 10:03:08
+*	创建人：管理员
+*/
+var otype = params.opentype;
+var panelauto={},returnarr={},panel= {
+	xtype:'rockflowgrid',opentype:otype,flownum:'demand',
+	tablename:'demand',defaultorder:'id desc',url:publiccheckstore('mode_demand|input','flow'),
+	formtitle:'业务需求',storeafteraction:'datalistafter',storebeforeaction:'datalistbefore',keywhere:jm.base64decode(''),
+	columns:[{'xtype':'rownumberer','width':40},{'text':'申请人','dataIndex':'name','width':90,search:true},{'text':'所属部门','dataIndex':'deptname','autowidth':true,search:true},{'text':'标题','dataIndex':'title','atype':'text','search':false,'width':'18%'},{'text':'操作时间','dataIndex':'optdt','atype':'datetime','search':true,'width':155},{'text':'说明','dataIndex':'explain','atype':'textarea','search':false,flex:1,align:"left"},{'text':'状态','dataIndex':'status'}]
 };
+//[自定义区域start]
 
 
-return {
-	panel:panel,
-	tabson:{
-		show:function(){
-			rock[index].isReload();
-		}
-	}
-};
+
+//[自定义区域end]
+panel=js.apply(panel, panelauto);
+returnarr.panel=panel;
+return returnarr;

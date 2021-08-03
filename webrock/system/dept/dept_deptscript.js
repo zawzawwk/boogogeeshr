@@ -22,8 +22,8 @@ function resetw(){
 var userarr = {},deptarr={};
 var im = {
 	init:function(){
-		var url = js.getajaxurl('loaddept','dept','system',{aid:adminid});
-		$.get(url, function(da){
+		var url = js.getajaxurl('loaddept','dept','system');
+		js.ajax(url,{'aid':adminid,'changetype':changetype}, function(da){
 			var a = js.decode(da);
 			im.showdept(a.darr);
 			$('#AltC').click(function(){
@@ -57,7 +57,7 @@ var im = {
 				facea='images/im/filess.png';
 				if(s1=='')facea='images/im/file.png';
 			}	
-			s+='<div '+st+' id="dept_'+a[i].id+'" ondblclick="im.opendept(\''+a[i].id+'\')">';
+			s+='<div id="dept_'+a[i].id+'" ondblclick="im.opendept(\''+a[i].id+'\')">';
 			for(j=0;j<oi;j++)s+='<img src="images/white.gif" align="absmiddle">';
 			if(a[i].type=='u'){
 				s+='<img src="'+facea+'" align="absmiddle">';
@@ -76,9 +76,10 @@ var im = {
 		   id1= sid.substr(1);
 		if(t=='u'){
 			var d = userarr[id1];
-			this.additems(d);
+			if(changetype.indexOf('user')>0)this.additems(d);
 		}else{
-			//this.openadept(sid);
+			var d = deptarr[id1];
+			if(changetype.indexOf('dept')>0)this.additemss(d);
 		}
 	},
 	openadept:function(sid){
@@ -89,31 +90,37 @@ var im = {
 		var s = '',
 		ids = 'yitian_'+a.id+'';
 		if(get(ids))return; 
-		var st = '';
-		if(a.imonline !=1){
-			st='class="offline"';
-		}
-		s='<div ondblclick="$(this).remove()" id="'+ids+'" '+st+' userid="'+a.uid+'" userna="'+a.name+'"><img src="'+a.face+'" align="absmiddle">'+a.name+'</div>';
+		s='<div ondblclick="$(this).remove()" id="'+ids+'" userid="'+a.uid+'" atype="u" userna="'+a.name+'"><img src="'+a.face+'" align="absmiddle">'+a.name+'</div>';
 		$('#changeuserlist').append(s);
 	},
 	clearla:function(){
 		$('#changeuserlist').html('');
 	},
-	
+	additemss:function(a){
+		if(changetype=='changedept')this.clearla();
+		var s = '',
+		ids = 'yitian_'+a.id+'';
+		if(get(ids))return; 
+		s='<div ondblclick="$(this).remove()" id="'+ids+'" userid="'+a.did+'" atype="d" userna="'+a.name+'"><img src="images/im/filess.png" align="absmiddle">'+a.name+'</div>';
+		$('#changeuserlist').append(s);
+	},
 	okque:function(){
-		var o = $('#changeuserlist').find('div'),sid,s='',s1='';
+		var o = $('#changeuserlist').find('div'),sid,s='',s1='',ate,oat;
 		for(var i=0;i<o.length;i++){
-			sid = $(o[i]).attr('userid');
+			oat = $(o[i]);
+			sid = oat.attr('userid');
+			ate = oat.attr('atype');
+			if(changetype=='changedeptusercheck')sid=''+ate+''+sid+'';
 			s+=','+sid+'';
-			s1+=','+$(o[i]).attr('userna')+'';
+			s1+=','+oat.attr('userna')+'';
 		}
+		
 		if(s!=''){
 			s=s.substr(1);
 			s1=s1.substr(1);
 		}
-		try{
-			opener[js.request('callback')](s1,s);
-		}catch(e){}
+		try{opener[js.request('callback')](s1,s);}catch(e){}
+		try{parent[js.request('callback')](s1,s);parent.closechangeuser()}catch(e){}
 		connectclose();
 	}
 }

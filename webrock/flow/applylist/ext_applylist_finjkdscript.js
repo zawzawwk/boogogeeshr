@@ -1,36 +1,20 @@
-var panel= {
-	xtype:'rockflowgrid',opentype:params.opentype,flownum:'finjkd',rand:rand,
-	tablename:'fininfom',keywhere:'[A][K]a.type[D]2',defaultorder:'optdt desc',
-	formtitle:'借款单',
-	columns:[{
-		xtype: 'rownumberer',
-		width: 40
-	},{
-		text:'姓名',dataIndex:'name',width:90,search:true
-	},{
-		text:'部门',dataIndex:'deptname',width:100,search:true,autowidth:true
-	},{
-		text:'借款金额',dataIndex:'money',width:100,search:true
-	},{
-		text:'申请日期',dataIndex:'applydt',width:90,search:true,atype:'date'
-	},{
-		text:'用途',dataIndex:'purpose',width:120
-	},{
-		text:'付款方式',dataIndex:'paytype',width:100,search:true
-	},{
-		text:'收款人',dataIndex:'fullname',width:100,search:true,autowidth:true
-	},{
-		text:'状态',dataIndex:'status'
-	},{
-		text:'说明',align:'left',dataIndex:'explain',flex:1,sortable:false
-	}]
+/**
+*	模块【finjkd.借款单】的列表展示页面，自定义区域内可写您想要的代码
+*	最后修改：2016-05-08 09:38:56
+*	创建人：管理员
+*/
+var otype = params.opentype;
+var panelauto={},returnarr={},panel= {
+	xtype:'rockflowgrid',opentype:otype,flownum:'finjkd',
+	tablename:'fininfom',defaultorder:'id desc',url:publiccheckstore('mode_finjkd|input','flow'),
+	formtitle:'借款单',storeafteraction:'datalistafter',storebeforeaction:'datalistbefore',keywhere:jm.base64decode('IEFORCAgYS5gdHlwZWAgPSAnMic:'),
+	columns:[{'xtype':'rownumberer','width':40},{'text':'申请人','dataIndex':'name','width':90,search:true},{'text':'所属部门','dataIndex':'deptname','autowidth':true,search:true},{'text':'申请日期','dataIndex':'applydt','atype':'text','search':true},{'text':'借款用途','dataIndex':'purpose','atype':'text','search':true},{'text':'收款人全称','dataIndex':'fullname','atype':'text','search':true},{'text':'付款方式','dataIndex':'paytype','atype':'rockcombo','search':false},{'text':'借款金额','dataIndex':'money','atype':'text','search':true},{'text':'说明','dataIndex':'explain','atype':'textarea','search':false,flex:1},{'text':'状态','dataIndex':'status'}]
 };
+//[自定义区域start]
 
-return {
-	panel:panel,
-	tabson:{
-		show:function(){
-			rock[index].isReload();
-		}
-	}
-};
+
+
+//[自定义区域end]
+panel=js.apply(panel, panelauto);
+returnarr.panel=panel;
+return returnarr;

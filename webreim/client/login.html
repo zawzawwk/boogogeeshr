@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>登录</title>
+<title>REIM登录</title>
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -11,12 +11,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
 <link rel="stylesheet" href="public/css/webimcss.css" />
 <link rel="shortcut icon" id="icon_show" href="favicon.ico" />
-<script type="text/javascript" src="public/js/jquery.js"></script>
+<script type="text/javascript" src="public/js/jquery.1.9.1.min.js"></script>
 <script type="text/javascript" src="public/js/js.js"></script>
 <script type="text/javascript" src="public/js/base64-min.js"></script>
+<script type="text/javascript" src="public/js/nwjs.js"></script>
+<script type="text/javascript" src="public/websql/websql.js"></script>
+<script type="text/javascript" src="public/js/reimdb.js"></script>
 <script>
 var temp_token='';
 function initbody(){
+	nwjs.init();
 	js.splittime=0;
 	var us=js.request('adminuser',js.getoption('adminuser')),murl=js.request('murl');
 	temp_token=js.request('token');
@@ -25,12 +29,31 @@ function initbody(){
 		js.setoption('apiurl', murl);
 		apiurl=murl;
 	}
-	get('adminpass').value=jm.base64decode(js.getoption('adminpass'));
+	var opas = jm.base64decode(js.getoption('adminpass'));
+	get('adminpass').value=opas;
 	var aid = js.getoption('adminid');
 	$('#adminuser').val(us);
 	var face = js.getoption('adminface');
 	if(face)get('myface').src=face;
-	if(temp_token.length==32)loginsubmit(0);
+	var adoid=js.getoption('autologin');
+	if(adoid=='1')get('checkautologin').checked=true;
+	nwjs.createtray('REIM即时通', 0);
+	if(temp_token.length==32){
+		loginsubmit(0);
+	}else{
+		if(adoid=='1'&&opas!='')loginsubmit(1);
+	}
+	reimdb.init();
+	reimdb.initcreate();
+}
+function bodyunload(){
+	nwjs.removetray();
+	js.ajaxss('reimweb','loginexit');
+}
+function changeauto(o){
+	var oi = '0';
+	if(o.checked)oi='1';
+	js.setoption('autologin', oi);
 }
 function loginsubmit(lx){
 	if(js.ajaxbool)return false;
@@ -49,6 +72,7 @@ function loginsubmit(lx){
 	var o = get('btn0');
 	o.value='登录中...';
 	o.disabled=true;
+	js.setoption('adminpass', jm.base64encode(pass));
 	js.ajaxss('login','checklogin', function(da){
 		o.value='登录成功';
 		loginsuccess(da);
@@ -66,6 +90,10 @@ function loginsuccess(a){
 	js.setoption('adminface',a.face);
 	js.setoption('admintoken',a.token);
 	js.setoption('splittime',a.splittime);
+	if(nwjsgui){
+		var x = screen.width - window.screenX- $(window).width()-30;
+		window.moveBy(x,0);
+	}
 	js.location('index.html?aid='+a.uid+'&token='+a.token+'');
 }
 function loginset(){
@@ -96,6 +124,7 @@ function loginset(){
 <body style="overflow:hidden;" scroll="no">
 
 <div>
+
 	<div>
 		<div style="padding:15px 0px 15px 0px;font-size:18px"></div>
 		<div align="center"><div onclick="location.reload()" class="faceicons"><img id="myface" src="images/logo.png" height="100" width="100"></div></div>
@@ -107,7 +136,11 @@ function loginset(){
 		<div style="padding:0px 20px">
 			<input class="input" onKeyUp="if(event.keyCode==13)loginsubmit(1)" id="adminpass" type="password" placeholder="请输入密码">
 		</div>
-		<div class="blank30"></div>
+		<div class="blank10"></div>
+		<div style="padding:0px 20px">
+			<label><input onclick="changeauto(this)" id="checkautologin" type="checkbox">下次自动登录</label>
+		</div>
+		<div class="blank20"></div>
 		
 		<div style="padding:0px 20px">
 			<input style="width:100%;padding:10px" type="button" id="btn0" onClick="loginsubmit(1)" class="webbtn" name="button" value="登录">

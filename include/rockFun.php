@@ -92,3 +92,19 @@ function getconfig($key)
 	if(isset($a[$key]))$s = $a[$key];
 	return $s;
 }
+
+function isempt($str)
+{
+	$bool=false;
+	if( ($str==''||$str==NULL||empty($str)) && (!is_numeric($str)) )$bool=true;
+	return $bool;
+}
+function contain($str,$a)
+{
+	$bool=false;
+	if(!isempt($a) && !isempt($str)){
+		$ad=strpos($str,$a);
+		if($ad>0||!is_bool($ad))$bool=true;
+	}
+	return $bool;
+}

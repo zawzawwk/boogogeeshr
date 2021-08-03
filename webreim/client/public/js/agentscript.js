@@ -1,10 +1,13 @@
 function initbody(){
-	receivename=jm.base64decode(js.request('name'));
-	adminname=jm.base64decode(js.request('adminname'));
-	adminface=jm.base64decode(js.request('mface'));
-	receiveface=jm.base64decode(js.request('gface'));
+	if(!opener){alert('sorry!');return;}
 	adminid=js.request('aid');
 	receiveid=js.request('gid');
+	var garr = opener.agentarr[receiveid];
+	receivename=garr.name;
+	adminname = opener.adminname;
+	adminface = opener.adminface;
+	receiveface=garr.face;
+
 	document.title=receivename;
 	
 	$('#uname_div').html(receivename);

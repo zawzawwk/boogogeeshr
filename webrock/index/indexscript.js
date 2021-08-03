@@ -76,6 +76,34 @@ function mopenview(nu,_id, gid, lx,cans){
 function mopenprint(nu,_id, gid,cans){
 	mopenview(nu,_id,gid,'print',cans);
 }
+function openiframe(ties, url, cans, gcns){
+	var can=js.apply({width:750,height:450, icon:gicons('page')}, cans);
+	if(!gcns)gcns={};
+	if(typeof(openiframeobj)!='object'){
+		var cansa = winopt({title: '上传',width:can.width,height:can.height,icon:can.icon,minWidth:650,minHeight:400,modal:true,border:false,items:{
+				html:'<iframe src="" name="openiframeobjname" width="100%" height="100%" frameborder="0"></iframe>'
+			}	
+		});
+		openiframeobj= Ext.create('Ext.Window',cansa);
+	}
+	openiframeobj.show();
+	openiframeobj.setWidth(can.width);
+	openiframeobj.setHeight(can.height);
+	openiframeobj.setIcon(can.icon);
+	openiframeobj.setTitle(ties);
+	if(url.indexOf('?')<0){
+		var urls = url.split(',');
+		var d={uid:adminid,num:urls[0]};
+		if(urls[1])d.mid=urls[1];
+		url= js.getajaxurl('@lu','input','flow',d);
+	}
+	for(var i in gcns)url+='&'+i+'='+gcns[i]+'';
+	openiframeobjname.location.href=url;
+}
+function opentabsiframe(txt,url,num,cans){
+	var surl='person,flow,iframe,url='+jm.encrypt(url)+'';
+	addtabs(txt, surl,num, cans);	
+}
 var bitian	= '<font color=red>*</font>';
 var indexxu	= -1;
 var rock	= [];
@@ -194,6 +222,7 @@ function createindex(){
 	var menubool	= true,changetabs;
 	function menuclick(view, record, item, index, e,obj){
 		var node= record.raw,icon='',surl=node.url+'';
+		if(!isempt(node.icons))icon=gicons(node.icons);
 		if(!record.isLeaf()){
 			if(record.isExpanded()){
 				record.collapse();
@@ -206,8 +235,10 @@ function createindex(){
 		}else if(node.ischeck=='2'){
 			window.open(surl);
 			return;
+		}else if(node.ischeck=='3'){
+			openiframe(node.text, node.url,{icon:icon});
+			return;
 		}
-		if(!isempt(node.icons))icon=gicons(node.icons);
 		addtabs(node.text, surl, node.num,{icon:icon,menuid:node.id,menutype:node.menutype});
 	}
 	function fullscreen(a){

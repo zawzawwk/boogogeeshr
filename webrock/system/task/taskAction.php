@@ -65,23 +65,23 @@ class taskClassAction extends Action
 	public function downbatAjax()
 	{
 		$ljth = str_replace('/','\\',ROOT_PATH);
-		$path = exec('where php.exe');
-		$str1 = '@echo off
-'.$path.' '.$ljth.'\task.php -minute';
-		$this->rock->createtxt('upload/RockOAMinute.bat', $str1);
+		echo '<title>定时任务创建方法</title>';
+
+		if(!$this->contain(PHP_OS,'WIN')){
+			echo '您的服务器系统是：Linux，可根据以下设置定时任务<br>';
+			echo '根据以下命令设置运行：<br><br>';
+			echo 'crontab -e<br>';
+			echo '#每5分钟运行一次<br>';
+			echo '*/5 * * * * php '.ROOT_PATH.'/task.php<br>';
+			exit;
+		}
 		
+		echo '您的服务器系统是：Windows，可根据以下设置定时任务<br>';
+		$path = exec('where php.exe');
 		$str1 = '@echo off
 '.$path.' '.$ljth.'\task.php';
 		$this->rock->createtxt('upload/RockOABase.bat', $str1);
-		$str = '::双击页面运行就可以了,该文件必须在您的win服务器上运行哦 
-::每一天间隔5分钟从08:00 开始运行 到19:00
-schtasks /create /sc DAILY /mo 1 /du "11:00" /ri 5 /sd "2016/04/01" /st "08:00:00"  /tn "RockOAMinute" /tr '.$ljth.'\upload\RockOAMinute.bat
-::每天每15分钟运行一次
-schtasks /create /sc DAILY /mo 1 /du "24:00" /ri 15 /sd "2016/04/01" /st "00:00:05"  /tn "RockOABase" /tr '.$ljth.'\upload\RockOABase.bat';
-		//$luj = 'upload/RockOATask.bat';
-		//$this->rock->createtxt($luj, $str);
-		echo $str;
-		header('Content-type:application/vnd.ms-excel');
-		header('Content-disposition:attachment;filename=RockOATask.bat');
+		echo '::在您的win服务器上，开始菜单→运行 输入 cmd 回车，输入以下命令(每5分钟运行一次)：<br><br>';
+		echo 'schtasks /create /sc DAILY /mo 1 /du "24:00" /ri 5 /sd "2016/04/01" /st "00:00:00"  /tn "RockOABase" /tr '.$ljth.'\upload\RockOABase.bat';
 	}
 }

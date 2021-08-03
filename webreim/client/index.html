@@ -19,9 +19,10 @@
 <script type="text/javascript" src="public/js/websocket.js"></script>
 <script type="text/javascript" src="public/js/webreim.js"></script>
 <script type="text/javascript" src="public/js/notify.js"></script>
+<script type="text/javascript" src="public/js/nwjs.js"></script>
 <script type="text/javascript" src="public/mode/menu/jquery-rockmenu.js"></script>
 <script>
-var URL = 'http://127.0.0.1/rock/';
+var URL = '';
 var adminid 	= '1',
 	adminname 	= '',
 	admintoken 	= '',
@@ -32,7 +33,7 @@ var adminid 	= '1',
 
 	<div class="topheadlan">
 		<span class="cursor" title="设置" onclick="im.indexsyscog()"><img src="images/im/shezhi16.png" align="absmiddle"></span>&nbsp;&nbsp;
-		<span class="cursor" title="刷新页面" onclick="location.reload()"><img src="images/im/shuaxin16.png" align="absmiddle"></span>&nbsp;&nbsp;
+		<span class="cursor" title="刷新页面" onclick="im.indexreload()"><img src="images/im/shuaxin16.png" align="absmiddle"></span>&nbsp;&nbsp;
 		<span class="cursor" title="未读信息" id="tixingtotalspan"><img src="images/im/tixing16.png" align="absmiddle"><font color=#ff6600 id="tixingtotal"></font></span>
 	</div>
 

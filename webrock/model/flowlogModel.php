@@ -6,7 +6,7 @@ class flowlogClassModel extends Model
 		$this->settable('flow_set');
 	}	
 
-	public function getdatalog($flownum, $table, $mid, $uids='')
+	public function getdatalog($flownum, $table, $mid, $uids='', $lx=0)
 	{
 		$setrs 		= $this->getone("`num`='$flownum'", "`id`,`name`,`table`,`isflow`");
 		$table 		= $setrs['table'];
@@ -28,7 +28,7 @@ class flowlogClassModel extends Model
 			if($optid==0)$optid=$rs['uid'];
 			$urs 	= m('admin')->getone($rs['uid'], 'name,deptname');
 			$aurs 	= m('admin')->getone($optid, 'name,deptname');
-			$logarr	= m('flow_log')->getall("$where order by `id` desc");
+			if($lx==0)$logarr	= m('flow_log')->getall("$where order by `id` desc");
 			
 			$status = $rs['status'];
 		}
@@ -95,7 +95,7 @@ class flowlogClassModel extends Model
 				}
 			}
 			if($isflow==0){
-				if($rs['isturn']==0&&($uids==$rs['uid'] || $uids==$rs['optid']))$isedit=1;
+				if(($uids==$rs['uid'] || $uids==$rs['optid']))$isedit=1;
 			}
 		}
 		
@@ -132,10 +132,7 @@ class flowlogClassModel extends Model
 		m('log')->addread($table, $mid, $uids);
 		if(!$coursers)$coursers=array('id'=>0,'num'=>'');
 		$arr		= array(
-			'data'	=> $rs,
-			'user'	=> $urs,
-			'aurs'	=> $aurs,
-			'log'	=> $log,
+			'data'	=> $rs,	'user'	=> $urs,	'aurs'	=> $aurs,	'log'	=> $log,
 			'readarr' => m('log')->getreadarr($table, $mid),
 			'logstr'=> $this->getlogstr($log),
 			'logarr' => $logarr,
@@ -143,17 +140,23 @@ class flowlogClassModel extends Model
 			'isdel' => $isdel,
 			'isedit' => $isedit,
 			'actarr' => $actarr,
+			'status' => $status,
 			'flownum'=> $flownum,
-			'flowname'=> $setrs['name'],
-			'nextcheck'=> $nextcheck,
-			'mid'	 => $mid,
+			'flowname'	=> $setrs['name'],
+			'modeid'	=> $setrs['id'],
+			'nextcheck'	=> $nextcheck,
+			'mid'	 	=> $mid,
+			'table'		=> $table,
 			'coursers'	=> $coursers,
 			'courseid'	=> $courseid, 
-			'inputid' => $inputid,
+			'inputid' 	=> $inputid,
 			'inputrs'	=> $inputrs,
 			'isflow'	=> $isflow,
 			'ncourseid'	=> $ncourseid
 		);
+		if($lx==1){
+			$arr['filers'] = m('file')->getfile($table, $mid);
+		}
 		return $arr;
 	}
 	

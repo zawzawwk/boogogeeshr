@@ -8,6 +8,13 @@ function initbody(){
 	});
 	stype = js.request('stype');
 	sid = js.request('sid');
+	var url = location.href;
+	var loc = url.split('#');
+	if(loc[1]){
+		var s11=loc[1].split('_');
+		stype=s11[0];
+		sid=s11[1];
+	}
 	im.init();
 }
 
@@ -90,6 +97,7 @@ var im = {
 			if(a.type==2)atype='agent';
 		}
 		if(sid=='')return;
+		//js.location(''+location.href+'#'+atype+'_'+sid+'');
 		$('#shownamea').html('['+a.name+']信息记录：');
 		this.showpage(1);
 	},
@@ -104,13 +112,29 @@ var im = {
 	_showdata:function(a){
 		this.showdata(a.data);
 		var s = '';
-		if(a.page>1)s+='&nbsp; <a href="javascript:" onclick="return im.showpage(1)">首页</a>';
-		if(a.page>1)s+='&nbsp; <a href="javascript:" onclick="return im.showpage('+(a.page-1)+')">上一页</a>';
+		if(a.page>1)s+='<a href="javascript:;" onclick="return im.showpage(1)">首页</a>';
+		if(a.page>1)s+='&nbsp; <a href="javascript:;" onclick="return im.showpage('+(a.page-1)+')">上一页</a>';
 		s+='&nbsp; 总记录'+a.count+'条/页数('+a.page+'/'+a.maxpage+')'
-		if(a.page<a.maxpage)s+='&nbsp; <a href="javascript:" onclick="return im.showpage('+(a.page+1)+')">下一页</a>'
-		if(a.page<a.maxpage)s+='&nbsp; <a href="javascript:" onclick="return im.showpage('+(a.maxpage)+')">尾页</a>';	
-		if(a.count<=0)s='&nbsp; 无记录';
+		if(a.page<a.maxpage)s+='&nbsp; <a href="javascript:;" onclick="return im.showpage('+(a.page+1)+')">下一页</a>'
+		if(a.page<a.maxpage)s+='&nbsp; <a href="javascript:;" onclick="return im.showpage('+(a.maxpage)+')">尾页</a>';	
+		if(a.count<=0){
+			s='无记录';
+		}else{
+			s+='&nbsp; <a href="javascript:;" onclick="return im.delxuan()">删除选中</a><input type="checkbox" onclick="im.selall(this)">';
+		}
 		$('#pageshow').html(s);
+	},
+	delxuan:function(){
+		var sid=js.getchecked('checkname');
+		if(sid=='')return;
+		var a = sid.split(',');
+		for(var i=0;i<a.length;i++){
+			$('#contlist'+a[i]+'').remove();
+		}
+		js.ajaxss('reimjilu','delrecord',function(){},{ids:sid});
+	},
+	selall:function(o1){
+		js.selall(o1,'checkname');
 	},
 	showdata:function(a){
 		var i,len = a.length,cont,lex,nas,ids='0',fase,url;
@@ -130,7 +154,8 @@ var im = {
 			if(!isempt(url)){
 				cont+='<br><a href="javascript:" onclick="return openurlla(\''+url+'\')">打开地址&gt;&gt;</a>';
 			}
-			cont= strformat.showqp(lex,nas,a[i].optdt, cont,'', fase);
+			cont= strformat.showqp(lex,nas,a[i].optdt, cont,'', fase, a[i].id);
+			cont= '<span id="contlist'+a[i].id+'">'+cont+'</span>';
 			this.addcont(cont);
 		}
 		if(ids != '0')this.setyd(ids);

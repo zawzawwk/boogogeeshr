@@ -6,13 +6,12 @@ var upload = {
 	maxsize:1, //最大10M
 	uptype:'',
 	upsizestring:'',
-	rand:function()
-	{
+	rand:function(){
 		var rand	= ''+js.now('d_His')+''+parseInt(Math.random()*9999)+'';
 		return rand;
 	},
 	reset:function(){
-		this.form.reset();
+		document.myformupfile.reset();
 	},
 	changefile:function(lx){
 		if(this.bool){
@@ -26,7 +25,6 @@ var upload = {
 		$('#filesssid').change(function(){
 			upload.filechange(this);
 		});
-		this.form = document.myformfile;
 	},
 	filechange:function(o){
 		this.removeerror();
@@ -52,23 +50,33 @@ var upload = {
 				return false;
 			}
 		}
-		this.false=true;
+		this.startup('upfile',filename);
+	},
+	startup:function(lx){
 		$('body').append('<iframe name="uploadiframe" style="display:none;width:0px;height:0px;" id="uploadiframeid"></iframe>');
 		$('#uploadiframeid').load(function(){
 			upload.iframeback();
 		});
-		this.form.action = js.apiurl('upfile','upload',{thumbtype:1,maxsize:this.maxsize});
-		try{this.form.submit();}catch(e){
+		var forms=document['myform'+lx+''];
+		forms.action = js.apiurl(lx,'upload',{thumbtype:1,maxsize:this.maxsize});
+		try{forms.submit();}catch(e){
 			js.msg('msg','无法上传发送,请不要用IE');
 			$('#uploadiframeid').remove();
 			return;
 		}
 		this.bool=true;
-		this.progress('<img src="images/loadings.gif" align="absmiddle"> ['+filename+']上传中...', 50);
+		this.progress('<img src="images/loadings.gif" align="absmiddle"> ['+filename+']上传中...', 100);
+	},
+	upbase64:function(){
+		var nr=$('#upcontent').val();
+		if(nr=='')return;
+		this.uptype='image';
+		this.startup('upcont','截图.png');
 	},
 	iframeback:function(){
 		if(!this.bool)return;
 		$('#uploadiframeid').remove();
+		$('#upcontent').val('');
 		js.ajaxss('upload','getfile', function(ret){
 			upload.uploadsuccess(ret);
 		},{},'none',function(str){
@@ -132,20 +140,41 @@ var upload = {
 		this.errorprogress('无法读取文件,无法上传1');
 	},
 	
-	readclip:function(){
-		var bo = connectreadclip();
-		return bo;
+	readclip:function(evt){
+		var clipboardData = evt.clipboardData;
+		if(!clipboardData)return;
+		for(var i=0; i<clipboardData.items.length; i++){  
+			var item = clipboardData.items[i];  
+			if(item.kind=='file'&&item.type.match(/^image\//i)){  
+				var blob = item.getAsFile(),reader = new FileReader();  
+				reader.onload=function(){  
+					var cont=this.result;
+					get('viewimg').src=cont;
+					$('#upcontent').val(cont.substr(cont.indexOf(',')+1));
+					$('#viewimgtext').html('<a onclick="upload.upbase64()" href="javascript:;">上传截图</a>');
+				}  
+				reader.readAsDataURL(blob);
+			}  
+		} 
+	},
+	cropput:function(evt){
+		js.msg('msg','请使用快捷键Ctrl+V');
 	},
 	//截屏
-	cropScreen:function(){
-		var bo = cropScreen();
-		setTimeout('upload.cropScreenbo=true;', 1000);
-	},
-	clipover:function(){
-		if(this.cropScreenbo){
-			this.readclip();
+	cropScreen:function(lx){
+		if(!nwjsgui){
+			js.msg('msg','无法使用截图，请使用客户端,<a href="http://www.rockoa.com/view_reim.html" target="_blank">[去下载]</a>');
+			return;
 		}
-		this.cropScreenbo = false;
+		var oatg = this.getpath();
+		nwjsgui.Shell.openItem(''+oatg+'/images/reimcaptScreen.exe');
+	},
+	getpath:function(){
+		var url = nwjsgui.App.manifest.main;
+		var las = url.lastIndexOf('\\');
+		var oatg = url.substr(0, las);
+		if(oatg.substr(0,5)=='file:')oatg=oatg.substr(7)
+		return oatg;
 	},
 	getemts:function(o){
 		if(!get('aemtsdiv')){
@@ -200,20 +229,11 @@ var strformat = {
 	//格式化内容
 	strcont:function(nr){
 		//获取表情的转化
-		var str		= unescape(nr);
-		var em		= str.match(/\(\:(.*?)\:\)/gi);//(:文件夹_序号:)
-		if(em != null){
-			for(var i=0;i<em.length; i++){
-				var fa1	= em[i].replace('(:','').replace(':)','');
-				str		= str.replace(em[i],'<img src="images/im/emots/'+fa1.replace('_','/')+'.gif">');
-			}
-		}
-		//URL的
+		var str = unescape(nr);
 		str	= this.strcontss(str,'A', '<a target="_blank" href="{s1}">{s2}</a>');//[A]名称|URL[/A]
 		str	= this.strcontss(str,'IMGS', '<img src="{s1}" onclick="strformat.openimg(this.src)">');
 		str	= this.strcontss(str,'IMG', '<img src="{s1}" onclick="strformat.openimg(this.src)" width="150">');
-		str	= this.strcontss(str,'FILE', '<a onclick="return js.downshow(\'{s1}\',this)" href="javascript:"><img src="mode/fileicons/{s3}.gif" align="absmiddle" class="icon">{s2}</a>');//[FILE]fid[/FILE]
-		
+		str	= this.strcontss(str,'FILE', '<a onclick="strformat.downshow(\'{s1}\')" href="javascript:;"><img src="images/fileicons/{s3}.gif" align="absmiddle" class="icon">{s2}</a>');
 		var patt1	= new RegExp("\\[(.*?)\\](.*?)", "gi"),emu,i,st1,oi;
 		 emu		= str.match(patt1);
 		if(emu!=null){
@@ -223,11 +243,11 @@ var strformat = {
 				if(oi)str	= str.replace(st1, '<img src="images/im/emots/qq/'+(oi-1)+'.gif">');
 			}
 		}
-		str	= str.replace(/\n/gi, '<br>');//换行的
+		str	= str.replace(/\n/gi, '<br>');
 		return str;
 	},
 	downshow:function(sid){
-		var url = 'mode/upload/uploadshow.php?id='+sid+'&p='+PROJECT+'';
+		var url = 'mode/upload/uploadshow.php?id='+sid+'';
 		openurlla(url, 400, 300);
 		return false;
 	},
@@ -284,14 +304,13 @@ var strformat = {
 	},
 	
 	//气泡样式
-	showqp:function(type,name,dt,cont,nuid, fase){
+	showqp:function(type,name,dt,cont,nuid, fase, msid){
 		
 		var nr	= '';
 		nr+='<div class="ltcont">';
 		nr+='	<div class="qipao" align="'+type+'">';
-		nr+='		<div class="dt" style="padding-'+type+':61px">'+name+'('+dt.substr(5,11)+')</div>';
+		nr+='		<div class="dt" style="padding-'+type+':61px">'+name+'('+dt.substr(5,11)+')'+((msid)?'<input name="checkname" value="'+msid+'" type="checkbox">':'')+'</div>';
 		nr+='		<table border="0" cellspacing="0" cellpadding="0">';
-		
 		
 		nr+='		<tr valign="top">';
 		if(type == 'left'){
@@ -342,126 +361,12 @@ var strformat = {
 }
 strformat.init();
 
-//发送
-function connectsend(msg){
-	var bo = false;
-	try{
-		bo = window.external.connectsend(msg);
-	}catch(e){
-		js.msg('msg','暂时无法发送');
-		return false;
-	}
-	return bo;
-}
-function send(reid, a){
-	var a1,s='';
-	if(!a)a={};
-	for(a1 in a){
-		s+=','+a1+':"'+a[a1]+'"';
-	}
-	if(s!=''){
-		s = s.substr(1);
-	}
-	s = jm.base64encode('{'+s+'}');
-	addhistory(a);
-	return sendstr(reid, s);
-}
-function sendstr(reid, s){
-	return connectsend('send@@@'+adminid+'@@@'+reid+'@@@'+s+'');
-}
-
-function addhistory(a){
-	try{
-		window.external.addhistory(receivename, receiveid, infortype, a.now);
-	}catch(e){}
-	openerrunscript('changehistory',infortype,receiveid);
-}
-
-//获取剪切板图片
-function connectreadclip(){
-	var bo = false;
-	if(upload.bool){
-		js.msg('msg','有文件在上传,请稍后在试!');
-		return;
-	}
-	upload.uptype='image';
-	try{
-		window.external.getClipoption();
-		bo = true;
-	}catch(e){}
-	return bo;
-}
-//初始化读取
-function connectreadfileinit(path, fsize){
-	upload.readinit(path,'read', fsize);
-}
-//上传读取文件
-var readfilebo = false;
-function connectreadfileback(basestr, fsize, path){
-	readfilebo = false;
-	upload.uploadback(basestr, fsize, path);
-}
-function connectreadfile(path){
-	try{
-		window.external.getfilebase64(path);
-	}catch(e){}
-	return true;
-}
-
-//接收到信息
-function connectreceive(str){
-	var s = jm.base64decode(str);
-	var a = js.decode(s);
-	guser.receivemess(a);
-}
-
-//截屏
-function cropScreen(){
-	var bo = false;
-	try{
-		window.external.cropScreen();
-		bo = true;
-	}catch(e){}
-	return bo;
-}
-
-
-
 function openrecord(lx,sid){
-	opener.openrecord(lx,sid);
+	opener.im.openrecord(lx,sid);
 }
 
-
-//退出关闭
 function connectclose(){
-	try{
-		window.external.formclose();
-	}catch(e){
-		window.close();
-	}	
-}
-
-//运行父窗口代码
-function openerrunscript(fun, csn1,csn2){
-	var bo = false;
-	if(!csn1)csn1='';
-	if(!csn2)csn2='';
-	try{
-		window.external.openerrunscript(fun, csn1,csn2);
-		bo = true;
-	}catch(e){	
-	}
-	return bo;
-}
-
-//打开新窗口
-function windowopen(title, num, url, w, h){
-	var bo = false;
-	try{
-		window.external.open(title, num, url, w, h);
-		bo = true;
-	}catch(e){}
-	return bo;
+	window.close();	
 }
 
 function openurlla(url, w, h){

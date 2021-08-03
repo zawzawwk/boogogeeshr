@@ -28,13 +28,11 @@ var adminid 	= '',
 	infortype 	= 'user';
 </script>
 </head>
-<body style="overflow:hidden" scroll="no">
+<body style="overflow:hidden;box-shadow: 10px 10px 5px red;" scroll="no">
 <div style="display:none;width:0px;height:0px;overflow:hidden;position:absolute; background-color:white">
-<form name="myformfile" method="post" enctype="multipart/form-data" target="uploadiframe">
-<input type="file" id="filesssid" name="file" class="form-control"><input type="submit" value="提交"></form>
+<form name="myformupfile" method="post" enctype="multipart/form-data" target="uploadiframe"><input type="file" id="filesssid" name="file"></form>
+<form name="myformupcont" method="post"target="uploadiframe"><textarea id="upcontent" name="content" class="form-control"></textarea></form>
 </div>
-
-
 <table border="0" width="100%" height="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td colspan="3">
@@ -61,9 +59,9 @@ var adminid 	= '',
 						
 						<a href="javascript:;" onclick="return false" tools="image" title="发送图片"><img src="images/im/photo.png"></a>
 						<a href="javascript:;" onclick="return false" tools="file" title="发送文件"><img src="images/im/file.png"></a>
-						<!--<a href="javascript:;" onclick="return false" tools="crop" title="截屏"><img src="images/im/crop.png"></a>
-						<a href="javascript:;" onclick="return false" tools="cropput" title="粘贴截屏图片"><img src="images/im/crop1.png"></a>-->
-						<a href="javascript:;"  onclick="return false" tools="clear" title="清屏"><img src="images/im/clear.png"></a>
+						<a href="javascript:;" onclick="return false" tools="crop" title="截屏"><img src="images/im/crop.png"></a>
+						<a href="javascript:;" onclick="return false" tools="cropput" title="粘贴截屏图片"><img src="images/im/crop1.png"></a>
+						<a href="javascript:;" onclick="return false" tools="clear" title="清屏"><img src="images/im/clear.png"></a>
 						<a href="javascript:;" onclick="return false" tools="jilu" style="float:right;"><img src="images/im/notpia.png" align="absmiddle">信息记录</a>
 					</div>
 				</div>
@@ -71,16 +69,15 @@ var adminid 	= '',
 		</tr>	
 		<tr>
 			<td>
-				<div style="height:100px;overflow:hidden;position:relative" id="contentdiv"><textarea id="content"></textarea></div>
+				<div style="height:100px;overflow:hidden;position:relative" id="contentdiv"><textarea onpaste="upload.readclip(event)" id="content"></textarea></div>
 			</td>
 		</tr>
 		<tr>
 			<td>
 				<div style="height:36px; background-color:#eeeeee">
 					<div align="right" style="padding:9px">
-						<span id="msgview"></span>
-						<a class="webbtn" onclick="return false" id="AltC" href="javascript:">关闭(C)</a>&nbsp; &nbsp; 
-						<a class="webbtn" onclick="return false" id="AltS" href="javascript:">发送(S)</a><a class="webbtn" style="padding-left:5px;padding-right:5px;border-left:1px #0572AD solid" href="javascript:">↓</a>
+						<a class="webbtn" onclick="return false" id="AltC" href="javascript:;">关闭(C)</a>&nbsp; &nbsp; 
+						<a class="webbtn" onclick="return false" id="AltS" href="javascript:;">发送(S)</a><a class="webbtn" style="padding-left:5px;padding-right:5px;border-left:1px #0572AD solid" href="javascript:;">↓</a>
 					</div>
 				</div>
 			</td>
@@ -98,9 +95,8 @@ var adminid 	= '',
 				<div style="height:230px;overflow:hidden;font-size:12px">
 					<div><img src="images/user1.png" id="uface_big" width="100" height="100"></div>
 					<div class="blank10"></div>
-					<div style="line-height:22px;height:20px;overflow:hidden;padding-left:10px" align="left"><font color=#888888>姓名：</font></div>
-					<div style="line-height:22px;height:20px;overflow:hidden;padding-left:10px" align="left"><font color=#888888>职位：</font></div>
-					<div style="line-height:22px;padding-left:10px" align="left"><font color=#888888>邮箱：</font></div>
+					<div style="line-height:22px;height:20px;overflow:hidden;padding-left:10px" align="left"><font color=#888888>姓名：</font><span id="rightname"></span></div>
+					<div style="line-height:22px;height:20px;overflow:hidden;padding-left:10px" align="left"><font color=#888888>职位：</font><span id="rightranking"></span></div>
 				</div>
 				<div style="background-color:#eeeeee;overflow:hidden;height:6px"></div>
 				<div class="blank20"></div>

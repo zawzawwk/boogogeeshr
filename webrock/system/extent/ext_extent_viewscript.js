@@ -31,19 +31,19 @@ var panel= [{
 		xtype: 'rownumberer',
 		width: 40
 	},{
-		text:'姓名',dataIndex:'name',width:100,search:true
+		text:'姓名',dataIndex:'name',width:'10%',search:true
 	},{
-		text:'模块编号',dataIndex:'mode',width:120,search:true
+		text:'模块编号',dataIndex:'mode',width:'18%',search:true
 	},{
-		text:'模块名称',dataIndex:'modename',width:120,search:true
+		text:'模块名称',dataIndex:'modename',width:'18%',search:true
 	},{
-		text:'类型',dataIndex:'type',width:120,search:true,renderer:function(v){
+		text:'类型',dataIndex:'type',width:'10%',search:true,renderer:function(v){
 			var s = '<font color=red>不允许查看</font>';
 			if(v=='1') s = '<font color=green>可查看</font>';
 			return s;
 		}
 	},{
-		text:'对应值',dataIndex:'renyname',autowidth:true,search:true
+		text:'对应值',dataIndex:'renyname',flex:1,search:true
 	},{
 		text:'ID',dataIndex:'id',width:60
 	}],

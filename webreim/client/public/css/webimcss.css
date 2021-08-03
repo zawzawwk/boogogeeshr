@@ -3,13 +3,14 @@ body{color:#000000;margin:0px;border:0;font-size:14px;}
 td,button{ font-size:14px}
 a,.cursor{cursor:pointer;}
 p{text-indent:24pt; margin:5px 0px}
+input,textarea{resize: none;outline:none}
 .zhu{ color:#0572AD}
 .hui{ color:#888888}
 .red{ color:#ff0000}
 .blue{ color:blue}
 table{border-spacing: 0;border-collapse: collapse;}
 a:link,a:visited{TEXT-DECORATION:none;color:#0572AD}
-a:hover{TEXT-DECORATION:underline;color:red;}
+a:hover{TEXT-DECORATION:none;color:red;}
 
 a.zhu{color:#cccccc}
 img{border:0}
@@ -46,7 +47,7 @@ input.checkbox,input.radio{ border:none;padding:0;margin-right:5px; width:16px; 
 .icons:hover{box-shadow:0px 0px 5px rgba(0,0,0,0.3);}
 
 .barinput{padding:0px 2px;width:150px;height:23px}
-.icon{ height:16px; width:16px}
+.icon{ height:16px; width:16px;margin-right:5px}
 
 .input,.select,.textarea{height:30px; line-height:28px; border:1px #cccccc solid; padding:2px 5px;font-size:14px;}
 .input:focus{box-shadow:0px 0px 5px rgba(0,0,0,0.3); border:1px #0887CC solid; color:#000000}
@@ -137,8 +138,8 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f1f1f1', cent
 .gusertop .div02{hieght:30px;overflow:hidden;margin:3px;float:left;color:white;line-height:30px}
 .gusertop .div03{hieght:30px;overflow:hidden;margin:3px;float:right;color:white;line-height:30px}
 
-#content{width:100%;height:100%;border:none;overflow:auto;padding:2px;font-size:14px}
-#content:focus{border:1px #dddddd solid}
+#content{width:100%;height:100%;border:none;overflow:auto;padding:3px;font-size:14px;}
+#content:focus{border:0px #dddddd solid}
 
 .toolsliao{height:24px;overflow:hidden;margin-top:3px}
 .toolsliao a{margin:0px 4px;height:20px;border:1px #eeeeee solid; background-color:eeeeee;display:block;float:left;padding:1px;font-size:12px;color:#555555}

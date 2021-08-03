@@ -32,6 +32,12 @@ class editChajian extends Chajian{
 		return $str;
 	}
 	
+	public function records($farr,$table, $id, $oners, $newrs)
+	{
+		$this->editcont($farr, $oners, $newrs);
+		$this->addrecord($table, $id);
+	}
+	
 	public function editcont($farr, $oners, $narr)
 	{
 		$str		= '';

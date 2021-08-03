@@ -11,17 +11,17 @@ var panel={
 			}]
 		},{
 			xtype: 'fieldcontainer',defaultType: 'textfield',layout:'hbox',items:[{
-				name:'reimpushurlPost',fieldLabel:'服务端推送地址',width:'50%'
+				name:'reimpushurlPost',fieldLabel:'服务端推送地址',width:'50%',readOnly:true
 			},{
-				name:'reimpushurlPost1',xtype:'displayfield',value:'&nbsp;用于推送到REIM客户端延迟(5秒内)'
+				name:'reimpushurlPost1',xtype:'displayfield',value:'&nbsp;用于推送到REIM客户端,http://开头'
 			}]
 		},{
 			xtype:'displayfield',value:'---↓以下是客户端相关设置---',fieldLabel:'&nbsp;',labelSeparator:''
 		},{
 			xtype: 'fieldcontainer',defaultType: 'textfield',layout:'hbox',items:[{
-				name:'reimhostPost',fieldLabel:'reim通信地址',width:'50%'
+				name:'reimhostPost',fieldLabel:'reim通信地址',width:'50%',readOnly:true
 			},{
-				name:'reimhostPost1',xtype:'displayfield',value:'&nbsp;用于客户端连接的通信地址'
+				name:'reimhostPost1',xtype:'displayfield',value:'&nbsp;客户端连接的通信地址,ws://开头'
 			}]
 		},{
 			xtype: 'fieldcontainer',defaultType: 'textfield',layout:'hbox',items:[{

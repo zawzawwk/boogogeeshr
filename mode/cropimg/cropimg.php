@@ -2,7 +2,7 @@
 include_once('../../config/config.php');
 if($rock->adminid==0)exit('sorry not sign');
 $title		= $rock->get('title');
-$title		= $rock->jm->uncrypt($title);
+$title		= $rock->jm->base64decode($title);
 
 $callback	= $rock->get('callback');
 $aid		= $rock->get('aid');

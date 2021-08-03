@@ -67,23 +67,6 @@ class Action extends mainAction
 		if(!$rs)$this->backmsg('登录失效');
 	}
 	
-	public function beforeAction()
-	{
-		if(D=='taskrun')$this->taskrunchange(2);
-	}
-	
-	public function afterAction()
-	{
-		if(D=='taskrun')$this->taskrunchange(1);
-	}
-	
-	private function taskrunchange($zt)
-	{
-		$mid	= (int)$this->get('mid');
-		if($mid>0)m('task')->update("`lastrundt`='$this->now',`lastrunzt`='$zt'", $mid);
-	}
-	
-	
 	public function backmsg($msg='', $demsg='保存成功', $da=array())
 	{
 		$bo = false;
@@ -177,6 +160,8 @@ class Action extends mainAction
 		if($msg==''){
 			if(!$db->delete("`id` in($id)")){
 				$msg= $this->db->error();
+			}else{
+				m('file')->delfiles($table, $id);
 			}
 		}
 		if($msg==''){
@@ -591,6 +576,7 @@ class ActionNot extends Action
 	public function publicsaveAjax(){}
 	public function publicdelAjax(){}
 	public function publicstoreAjax(){}
+	public function publictreestoreAjax(){}
 	public function publiccheckstoreAjax(){}
 	protected function logincheck(){}
 }

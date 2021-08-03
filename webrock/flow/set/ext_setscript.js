@@ -61,20 +61,20 @@ function getistess(a){
 
 var _olidtabl;
 function getfielshoe(){
-	var table = grid.changedata.table;
+	var das=grid.changedata;
+	var table = das.table;
 	if(_olidtabl == table){
 		getcmp('itemsel_'+rand+'').setValue(fieldsdata[changeid]);
 		return;
 	}	
-	$.post(js.getajaxurl('getfields','public'),{table:table,atype:0},function(da){
-		var d = js.decode(da);
+	js.ajax(js.getajaxurl('getfields','public'),{table:table,atype:0,modeid:das.id},function(d){
 		win.removeAll();
 		win.add(getistess(d));
 		var fields = fieldsdata[changeid];
 		if(isempt(fields))fields='';
 		var a = getcmp('itemsel_'+rand+'');
 		a.setValue(fields);
-	});
+	},'post,json');
 	_olidtabl = table;
 }
 
@@ -91,8 +91,8 @@ function clickpipei(){
 	},'post');
 }
 function setcoursename(){
-	var da = grid.changedata;
-	rockoption.setlist('['+da.name+']进程名称', 'flowcoursename_'+da.id);
+	var a = grid.changedata;
+	rockoption.setlist('['+a.name+']进程名称', 'flowcoursename_'+a.id);
 }
 
 function btns(bo){
@@ -104,11 +104,41 @@ function btns(bo){
 }
 function setcoursela(){
 	var a 	= grid.changedata;
+	if(a.isflow!=1){
+		js.msg('msg','不是有流程模块，无需进程管理操作');
+		return;
+	}
 	addtabs('['+a.name+']进程管理','flow,course,setid='+a.id+',table='+a.table+',index='+index+'','flowset'+a.id+'');
 }
 function setinputla(o1){
-	var a 	= grid.changedata;
 	var lx  = o1.astype;
+	var a 	= grid.changedata;
+	if(lx==2){
+		addtabs('['+a.table+']表结构管理','flow,table,table='+a.table+'','flowtable'+a.table+'');
+		return;
+	}
+	if(lx==3){
+		var url = js.getajaxurl('$input','table',dir,{setid:a.id});
+		js.open(url, 1000,530);
+		return;
+	}
+	if(lx==4){
+		var tabs=a.table;
+		if(!isempt(a.tables))tabs+='|'+a.tables+'';
+		addtabs('['+a.name+']页面元素设置','flow,table,element,mid='+a.id+',table='+tabs+'','flowelement'+a.id+'');
+		return;
+	}
+	if(lx==5){
+		js.msg('wait','创建中...');
+		js.ajax(js.getajaxurl('createlist',mode,dir),{id:a.id},function(d){
+			if(d.success){
+				js.msg('success','创建成功');
+			}else{
+				js.msg('msg',d.msg);
+			}
+		},'get,json');
+		return;
+	}
 	var url = js.getajaxurl('$pageset',mode,dir,{setid:a.id,atype:lx});
 	js.open(url, 1000,530);
 }
@@ -128,10 +158,18 @@ var panel = {
 	},'-',{
 		text:'<font color=red>进程管理</font>',icon:gicons('sitemap'),id:'course_'+rand+'',handler:setcoursela,disabled:true
 	},'-',{
-		text:'显示设置',icon:gicons('application_form'),id:'inputla_'+rand+'',disabled:true,menu:[{
-			text:'电脑PC端',handler:setinputla,astype:0
+		text:'流程开发显示设置',icon:gicons('application_form'),id:'inputla_'+rand+'',disabled:true,menu:[{
+			text:'表结构设置',handler:setinputla,astype:2,icon:gicons('table')
 		},{
-			text:'手机移动端',handler:setinputla,astype:1
+			text:'页面元素设置',handler:setinputla,astype:4,icon:gicons('application_view_columns')
+		},{
+			text:'录入页面布局',handler:setinputla,astype:3,icon:gicons('html')
+		},{
+			text:'电脑PC端展示设置',handler:setinputla,astype:0
+		},{
+			text:'手机移动端展示设置',handler:setinputla,astype:1
+		},{
+			text:'生成列表展示页',handler:setinputla,astype:5
 		}]
 	},'-',{
 		text:'重新匹配流程',handler:clickpipei
@@ -170,7 +208,7 @@ var panel = {
 	}],
 	formwidth:650,
 	formparams:{
-		submitfields:'name,num,sort,table,summary,type,zntx,imtx,emtx,isflow,sericnum,isapp,wxtx,receid,recename,apptx',
+		submitfields:'name,num,sort,table,summary,type,zntx,imtx,emtx,isflow,sericnum,isapp,wxtx,receid,recename,apptx,tables',
 		params:{int_filestype:'sort,zntx,imtx,emtx,isflow,isapp,wxtx,apptx',otherfields:'optdt={now}'},autoScroll:false,
 		url:publicsave(mode, dir),
 		aftersaveaction:'pandtablela',
@@ -187,6 +225,8 @@ var panel = {
 			fieldLabel:'排序号',name:'sortPost',value:'0',minValue:0,xtype:'numberfield'
 		},{
 			fieldLabel:'对应的表',name:'tablePost'
+		},{
+			fieldLabel:'对应子表关联',name:'tablesPost'
 		},{
 			fieldLabel:''+bitian+'单号规则',name:'sericnumPost',allowBlank: false
 		},{

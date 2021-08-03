@@ -48,10 +48,10 @@ var panelss = {
 	}],
 	_clickedit:function(){
 		var sid = this.changedata.id;
-		addtabs('编辑车辆','humanres,car,add,id='+sid+',gridid='+this.getId()+'','caradd_'+sid+'',{icon:gicons('edit')});
+		opentabsiframe('编辑车辆','flow,input,lu,num=carm,gridid='+this.getId()+',mid='+sid+'','carm'+sid+'',{icon:gicons('edit')});
 	},
 	_clickeadd:function(){
-		addtabs('新增车辆','humanres,car,add,gridid='+this.getId()+'','caradd',{icon:gicons('add')});
+		opentabsiframe('新增车辆','flow,input,lu,num=carm,gridid='+this.getId()+'','carm0',{icon:gicons('add')});
 	},
 	beforeload:function(){
 		btn(true);
@@ -161,10 +161,7 @@ return {
 	},
 	tabson:{
 		show:function(){
-			if(grid.isreadload){
-				grid.storereload();
-				grid.isreadload=false;
-			}	
+			grid.isReload();				
 		}
 	}
 };

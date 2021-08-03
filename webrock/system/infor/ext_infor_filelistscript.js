@@ -45,7 +45,7 @@ var panel= [{
 	}
 },{
 	xtype:'rockgrid',checkcolumns:true,keywhere:"[A][K]atype[D]"+atype+""+wherss+"",
-	tablename:'word',searchtools:true,celleditbool:true,defaultorder:'sort',
+	tablename:'word',searchtools:true,celleditbool:true,defaultorder:'sort,id desc',
 	tbar:['->',{
 		text:'共享操作',icon:gicons('page_go'),handler:function(){grid._shategoto()}
 	},'-',{

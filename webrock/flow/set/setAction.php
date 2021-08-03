@@ -89,9 +89,6 @@ class setClassAction extends Action
 		if(file_exists($path)){
 			$content = file_get_contents($path);
 		}
-		if($content==''){
-			//$content = '<table width="100%" bordercolor="#000000" border="0"><tbody><tr><td width="15%" height="34" align="right" class="ys1">姓名：</td><td width="35%" class="ys2">{base_name}</td><td width="15%" class="ys1" align="right">部门：</td><td width="35%" class="ys2">{base_deptname}</td></tr><tr><td height="34" align="right" class="ys1">申请日期：</td><td class="ys2">{dt}</td><td align="right" class="ys1">操作时间：</td><td class="ys2">{optdt}</td></tr><tr><td height="34" align="right" class="ys1">说明：</td><td colspan="3" class="ys2">{explain}</td></tr><tr><td height="34" align="right" class="ys1">相关文件：</td><td colspan="3" class="ys2">{file_content}</td></tr></tbody></table>';
-		}
 		$this->smartydata['content'] = $content;
 		$this->smartydata['atype'] 	= $atype;
 	}
@@ -106,5 +103,64 @@ class setClassAction extends Action
 		$path	   .= '.html';
 		$this->rock->createtxt($path, $content);
 		echo 'success';
+	}
+	
+	public function createlistAjax()
+	{
+		$id	= (int)$this->get('id');
+		$mors = m('flow_set')->getone($id,'`table`,`num`,`name`,`isflow`');
+		if($mors['isflow']==0)$this->backmsg('不是有流程的模块，请自行开发');
+		
+		$farr = m('flow_element')->getall("`mid`='$id' and `iszb`=0 and `iszs`=1",'`fields`,`name`,`fieldstype`,`lattr`,`isss`,`width`','`sort`');
+		$num  = $mors['num'];
+		$keywhere = $this->jm->base64encode(m('where')->getstring('flowset_'.$num,'a.','b.'));
+		$str 	 = "{'xtype':'rownumberer','width':40}";
+		$str 	.= ",{'text':'申请人','dataIndex':'name','width':90,search:true}";
+		$str 	.= ",{'text':'所属部门','dataIndex':'deptname','autowidth':true,search:true}";
+		
+		foreach($farr as $k=>$rs){
+			$sea	= ($rs['isss']==1)?'true':'false';
+			$width	= $rs['width'];
+			$str	.= ",{'text':'".$rs['name']."','dataIndex':'".$rs['fields']."','atype':'".$rs['fieldstype']."','search':$sea";
+			if(!$this->isempt($width)){
+				if(is_numeric($width)){
+					$str.=",'width':$width";
+				}else{
+					$str.=",'width':'$width'";
+				}
+			}
+			if(!$this->isempt($rs['lattr']))$str.=",".$rs['lattr']."";
+			$str	.= '}';
+		}
+		
+		$str 	.= ",{'text':'状态','dataIndex':'status'}";
+		
+		$columns   = "[$str]";
+		$path 	   = 'webrock/flow/applylist/ext_applylist_'.$num.'script.js';
+		$oldcont 	= file_get_contents($path);
+		$autoquye	= $this->rock->getcai($oldcont,'//[自定义区域start]','//[自定义区域end]');
+$str = "/**
+*	模块【".$num.".".$mors['name']."】的列表展示页面，自定义区域内可写您想要的代码
+*	最后修改：$this->now
+*	创建人：$this->adminname
+*/
+var otype = params.opentype;
+var panelauto={},returnarr={},panel= {
+	xtype:'rockflowgrid',opentype:otype,flownum:'$num',
+	tablename:'".$mors['table']."',defaultorder:'id desc',url:publiccheckstore('mode_".$num."|input','flow'),
+	formtitle:'".$mors['name']."',storeafteraction:'datalistafter',storebeforeaction:'datalistbefore',keywhere:jm.base64decode('$keywhere'),
+	columns:$columns
+};
+//[自定义区域start]
+
+$autoquye
+
+//[自定义区域end]
+panel=js.apply(panel, panelauto);
+returnarr.panel=panel;
+return returnarr;";
+		
+		$this->rock->createtxt($path, $str);
+		$this->backmsg('','ok');
 	}
 }

@@ -1,30 +1,8 @@
 <?php 
 if(!defined('HOST'))exit('not access');
+
 class flowClassAction extends ActionNot{
 	
-
-	public function repipeiAjax()
-	{
-		$rows	= m('flow_set')->getall("`isflow`=1 and `table` is not null order by `sort`", 'num');
-		$str	= '';
-		foreach($rows as $k=>$rsss){
-			$flow	 = f($rsss['num']);
-			$arrs	 = $flow->reloadpipei();
-			$str	.= ''.($k+1).'、'.$arrs[0];
-		}
-		echo 'success';
-	}
-	
-	//删除些没用申请单据数据
-	public function clearAjax()
-	{
-		$rows = $this->db->getall('SELECT `id`,`table`,`mid` FROM `[Q]flow_bill` order by `table`');
-		foreach($rows as $k=>$rs){
-			
-		}
-	}
-	
-
 	public function checkAjax()
 	{
 		$flownum	= $this->post('flownum');

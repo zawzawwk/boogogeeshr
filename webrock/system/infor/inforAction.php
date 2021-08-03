@@ -9,6 +9,10 @@ class inforClassAction extends Action
 		$typename	= $this->post('typename');
 		$atype		= $this->post('atype');
 		$this->db->insert('[Q]word', 'typename,`typeid`,`adddt`,`fileid`,`sort`,filename,filesizecn,fileext,optname,atype,optid', "select '$typename','$typeid',adddt,id,0,filename,filesizecn,fileext,'$this->adminname','$atype','$this->adminid' from [Q]file where id in($fileid)", true);
+		$rows 		= m('word')->getrows("fileid in($fileid)",'id,fileid');
+		foreach($rows as $k=>$rs){
+			m('file')->addfile($rs['fileid'],'word', $rs['id']);
+		}
 	}
 	
 	

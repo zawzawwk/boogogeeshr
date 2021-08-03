@@ -52,7 +52,8 @@ class deptClassAction extends Action
 	
 	public function loaddeptAjax()
 	{
-		$arr['darr'] 	= m('dept')->getdept(0, 'user');
+		$type 			= $this->request('changetype','user');
+		$arr['darr'] 	= m('dept')->getdept(0, $type);
 		echo json_encode($arr);
 	}
 }

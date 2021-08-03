@@ -1,5 +1,9 @@
 function initbody(){
-	
+	var tit = document.title;
+	if(tit.indexOf('<?')>-1){
+		var bo=confirm('提示：您没有开启php短标签，会影响系统使用哦\n\n是否去查看如何开启？');
+		if(bo)window.open('http://www.rockoa.com/view_opentag.html');
+	}
 }
 var bool = false;
 function nextabc(){

@@ -1,18 +1,20 @@
 function initbody(){
-	receivename=jm.base64decode(js.request('name'));
-	adminname=jm.base64decode(js.request('adminname'));
-	adminface=jm.base64decode(js.request('mface'));
-	receiveface=jm.base64decode(js.request('gface'));
+	if(!opener){alert('sorry!');return;}
 	adminid=js.request('aid');
 	receiveid=js.request('gid');
+	var garr = opener.grouparr[receiveid];
+	receivename=garr.name;
+	adminname = opener.adminname;
+	adminface = opener.adminface;
+	receiveface=garr.face;
+
 	document.title=receivename;
 	
 	$('#uname_div').html(receivename);
 	get('uface').src=receiveface;
 	get('icon_show').href=receiveface;
-	var gtype = js.request('gtype');
-	if(gtype=='1')$('#div03_lx').show();
-	
+	if(garr.type=='1')$('#div03_lx').show();
+	window.focus();
 	get('content').focus();
 	resetw();
 	$(window).resize(function(){
@@ -29,8 +31,8 @@ function initbody(){
 	$('#fileid').change(function(){
 		upload.change(this);
 	});
-	$("a[tools]").click(function(){
-		guser.clicktools(this);
+	$("a[tools]").click(function(evt){
+		guser.clicktools(this,evt);
 	});
 	$('body').click(function(e){
 		js.downbody(this, e);
@@ -197,7 +199,7 @@ var guser = {
 		}
 		return true;
 	},
-	clicktools:function(o1){
+	clicktools:function(o1,evt){
 		var o = $(o1);
 		var lx= o.attr('tools');
 		if(lx=='image' || lx=='file'){
@@ -210,7 +212,7 @@ var guser = {
 			upload.cropScreen();
 		}
 		if(lx == 'cropput'){
-			upload.readclip();
+			upload.cropput(evt);
 		}
 		if(lx=='emts'){
 			upload.getemts(o);

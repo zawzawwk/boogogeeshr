@@ -15,6 +15,8 @@ class setClassAction extends Action
 		}else{
 			$this->option->setval('systemtitle', $this->post('titlePost'));
 			$this->option->setval('systemlogo', $this->post('logoPost'));
+			$this->option->setval('mysqlpath', $this->post('mysqlpathPost'));
+			$this->option->setval('mysqlpathbf', $this->post('mysqlpathbfPost'));
 		}
 		$this->backmsg($msg);
 	}
@@ -22,8 +24,10 @@ class setClassAction extends Action
 	public function getsetAjax()
 	{
 		$arr= array();
-		$arr['title'] = $this->option->getval('systemtitle');
-		$arr['logo'] = $this->option->getval('systemlogo', 'images/icons40.png');
+		$arr['title'] 	= $this->option->getval('systemtitle');
+		$arr['mysqlpathbf'] 	= $this->option->getval('mysqlpathbf');
+		$arr['mysqlpath'] 	= $this->option->getval('mysqlpath');
+		$arr['logo'] 	= $this->option->getval('systemlogo', 'images/icons40.png');
 		$arr['isinits'] = (int)$this->option->getval('systeminit', '0');
 		echo json_encode($arr);
 	}

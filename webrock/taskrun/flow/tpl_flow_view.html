@@ -114,6 +114,7 @@ function submitother(nae,zt,las, smlx){
 .table{font-size:14px;}
 .tdcont{padding:0px 0px}
 .tdcont p{padding:3px 5px}
+.tdcont a{color:blue;TEXT-DECORATION:underline;}
 .table .tdys1{padding:5px 5px;border:1px #888888 solid;text-align:right;width:100px}
 .table .tdys2{padding:5px 5px;border:1px #888888 solid;text-align:left}
 .tabled2 td{padding:8px;border:1px #dddddd solid;text-align:center}
@@ -128,18 +129,25 @@ function submitother(nae,zt,las, smlx){
 .ydullist li img{height:24px;width:24px;margin-right:3px;}
 .ydullist li span{font-size:10px;color:#888888}
 .yyjnr{font-size:12px;background-color:#f1f1f1;padding:5px;margin:5px 0px}
+.status{position: absolute;right:5px;top:-10px;display:}
 </style>
 </head>
 <body style="padding:15px">
 <div align="center">
 
-<div id="printdiv" style="position:fixed;left:2px;top:2px" align="left">
+<div id="printdiv" style="position:fixed;left:2px;top:2px;z-index:4" align="left">
 	<button class="webbtn" type="button" onclick="openprint()"><img src="images/print.png"> 进入打印页面</button>&nbsp; 
 	<button class="webbtn" type="button" onclick="connectclose()">关闭</button>
 </div>
 
-<div style="width:700px">
+<div style="width:700px;position:relative">
+	
 	<?php 
+	if($da['arr']['isflow']==1){
+		$_tzt = $da['arr']['status'];
+		if($da['arr']['data']['isturn']==0)$_tzt=3;
+		echo '<div class="status"><img src="images/status'.$_tzt.'.png"></div>';
+	}
 	if($da['notitle']!='true'){
 		echo '<div style="padding-bottom:15px;font-size:30px">'.$da['title'].'</div>'; 
 	}

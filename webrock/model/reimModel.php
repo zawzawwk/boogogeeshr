@@ -1,19 +1,32 @@
 <?php
 class reimClassModel extends Model
 {
-
+	private $groupname = '';
 	
 	public function initModel()
 	{
 		$this->settable('im_mess');
-	}	
+	}
+	
+	
+	
+	private function getgroupid($gname)
+	{
+		$agesta = explode(',', $gname);
+		$name 	= $agesta[0];
+		$sid 	= (int)$this->db->getmou('[Q]im_group','id', "`name`='$name' and `type`=2");
+		if($sid==0 && count($agesta)>1)$sid = $this->getgroupid($agesta[1]);
+		$this->groupname = $name;
+		return $sid;
+	}
 		
 	/**
 	*	REIM推送的
 	*/
 	public function sendsystem($sendid, $receid, $gname, $cont, $table='',$mid='', $url='')
 	{
-		$gid	= (int)$this->db->getmou('[Q]im_group','id',"`name`='$gname' and `type`=2");
+		$gid	= $this->getgroupid($gname);
+		$gname	= $this->groupname;
 		if($gid==0)return false;
 		
 		if($this->isempt($receid))return 'not receuid';
@@ -145,7 +158,7 @@ class reimClassModel extends Model
 		$whes	= $this->rock->dbinstr('receuid', $uid);
 		$where  = "`type`='$type' and `receid` ='$sid' and $whes and id in(select mid from [Q]im_messzt where uid='$uid')";
 		if($type == 'user'){
-			$where  = "`zt`=0 and `receid`='$uid' and `type`='user'";
+			$where  = "`zt`=0 and `receid`='$uid' and `type`='user' and $whes";
 		}
 		if($blx==1)return $where;
 		$to 	= $this->rows($where);

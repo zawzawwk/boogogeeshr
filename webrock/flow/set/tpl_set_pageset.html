@@ -14,8 +14,6 @@ $btianarr=array();
 <script type="text/javascript" src="js/js.js"></script>
 <script type="text/javascript" src="mode/kindeditor/kindeditor-min.js"></script>
 <script type="text/javascript">
-js.path	= '<?=PATH?>';
-PROJECT = '<?=P?>';
 var id  = '<?=$da['rs']['id']?>';
 var modenum = '<?=$da['rs']['num']?>',editor,atype='<?=$da['atype']?>';
 function initbody(){
@@ -29,15 +27,13 @@ function initbody(){
 		allowPreviewEmoticons : false,
 		allowImageUpload : true,
 		formatUploadUrl:false,
-		uploadJson:'mode/kindeditor/kindeditor_upload.php',
 		allowFileManager:true,
 		minWidth:'300px',
 		items : [
 			'forecolor', 'hilitecolor', 'bold', 'italic', 'underline','fontsize','hr',
 			'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-			'insertunorderedlist', '|','table', 'link','unlink','|','source','clearhtml','fullscreen'],
-		blur:function(){
-		}
+			'insertunorderedlist', '|','table', 'link','unlink','|','source','clearhtml','fullscreen'
+		]
 	};
 	editor = KindEditor.create('#content', cans);
 }

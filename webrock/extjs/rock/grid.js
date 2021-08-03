@@ -165,6 +165,7 @@ Ext.define('Ext.rock.grid',{
 			ind = a[i].dataIndex;
 			if(a[i].text && a[i].search && ind){
 				if(a[i].text.length>w)w=a[i].text.length;
+				if(a[i].atype=='datetime')a[i].atype='date';
 				sto.push([ind, a[i].text]);
 				me._columnsobj[ind] = a[i];
 				if(foi=='')foi=ind;

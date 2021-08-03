@@ -1,7 +1,7 @@
 <?php
 class whereClassModel extends Model
 {
-	public function getstring($mnum, $qz='', $uqz='')
+	public function getstring($mnum, $qz='', $uqz='', $slx=0)
 	{
 		$rows = $this->getall("`mnum`='$mnum' order by `sort`");
 		$s	  = '';
@@ -41,6 +41,9 @@ class whereClassModel extends Model
 			if(!$this->rock->contain($qzss, 'AND')){
 				$s = ' AND'.$s;
 			}
+		}
+		if($slx==1){
+			$s = str_replace(array(' ',"'",'AND','='), array('[K]','[F]','[A]','[D]') ,$s);
 		}
 		return $s;
 	}

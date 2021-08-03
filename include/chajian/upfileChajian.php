@@ -60,7 +60,7 @@ class upfileChajian extends Chajian{
 		}
 			
 		if(!$this->contain('|'.$this->ext.'|', '|'.$file_ext.'|') && $this->ext != '*'){
-			return '上传的文件类型['.$file_ext.']不符合，限制文件类型：'.$this->ext.'';
+			return '禁止上传文件类型['.$file_ext.']';
 		}
 		
 		if($file_size>$this->maxsize*1024*1024){

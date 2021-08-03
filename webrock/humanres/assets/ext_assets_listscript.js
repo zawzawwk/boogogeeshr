@@ -44,10 +44,10 @@ var panelss = {
 	}],
 	_clickedit:function(){
 		var sid = this.changedata.id;
-		addtabs('编辑资产','humanres,assets,add,id='+sid+',gridid='+this.getId()+'','assetsadd_'+sid+'',{icon:gicons('edit')});
+		opentabsiframe('编辑资产','flow,input,lu,num=assetm,gridid='+this.getId()+',mid='+sid+'','assetm'+sid+'',{icon:gicons('edit')});
 	},
 	_clickeadd:function(){
-		addtabs('新增资产','humanres,assets,add,gridid='+this.getId()+'','assetsadd',{icon:gicons('add')});
+		opentabsiframe('新增资产','flow,input,lu,num=assetm,gridid='+this.getId()+'','assetm0',{icon:gicons('add')});
 	},
 	beforeload:function(){
 		btn(true);

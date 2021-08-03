@@ -1,11 +1,12 @@
 var MODE	= '',ACTION = '',DIR='',PROJECT='',HOST='',PARAMS='',QOM='',admintoken='',adminid=0,nwjs=false,nwjsgui=false;
 var windows	= null;
 appapikey 	= '';
-apiurl		= 'http://127.0.0.1/rock/';
+apiurl		= 'http://demo.rockoa.com/';
 function initbody(){}
 function bodyunload(){}
 $(document).ready(function(){
-	try{nwjsgui = require('nw.gui');}catch(e){nwjsgui=false;}
+	try{if(typeof(nw)=='object'){nwjsgui = nw;}else{nwjsgui = require('nw.gui');}}catch(e){nwjsgui=false;}
+	document.oncontextmenu=new Function("return false");
 	adminid		= js.request('aid',adminid);
 	admintoken	= js.request('token');
 	var lurl 	= location.href;
@@ -22,6 +23,7 @@ $(document).ready(function(){
 	});
 	try{
 		var winobj = js.request('winobj');
+		if(nwjsgui)window.focus=function(){nwjsgui.Window.get().focus()}
 		if(winobj!='')opener.js.openarr[winobj]=window;
 	}catch(e){}
 	initbody();
@@ -139,7 +141,7 @@ js.serverdt=function(atype){
 	return dt;
 }
 js.openarr={};
-js.open=function(url,w,h,wina,can){
+js.open=function(url,w,h,wina,can,wjcan){
 	if(wina){try{var owina	= this.openarr[wina];owina.document.body;owina.focus();return owina;}catch(e){}}
 	var ja=(url.indexOf('?')>=0)?'&':'?';
 	url+=''+ja+'opennew=true';
@@ -153,8 +155,9 @@ js.open=function(url,w,h,wina,can){
 	a1 = js.apply(a1,can);
 	for(var o1 in a1)s+=','+o1+'='+a1[o1]+'';
 	if(nwjsgui){
-		var ocsn={'toolbar':false,'frame':true,width:w,height:h,x:l,y:t,icon:'images/logo.png'};
-		var opar=nwjsgui.Window.open(url, ocsn);
+		var ocsn=js.apply({'frame':true,width:w,height:h,x:l,y:t,icon:'images/logo.png'},wjcan);
+		if(typeof(nw)=='undefined')ocsn.toolbar=false;
+		var opar=nw.Window.open(url, ocsn);
 	}else{
 		var opar=window.open(url,'',s);
 	}
@@ -405,8 +408,8 @@ js.tanbody=function(act,title,w,h,can1){
 	js.xpbody(act,can.mode);
 	$('body').prepend(s);
 	if(can.closed=='none'){
-		$('#'+act+'_bbar').remove();
-		$('#'+act+'_spancancel').remove();
+		$('#'+act+'_cancel').remove();
+		$('#'+act+'_spancancel').parent().remove();
 	}
 	if(can.bbar=='none')$('#'+act+'_bbar').remove();
 	var lw = get(mid).offsetWidth;

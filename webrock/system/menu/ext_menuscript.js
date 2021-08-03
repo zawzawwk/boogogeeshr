@@ -17,7 +17,7 @@ function clickadddown(){
 	form.field('pidPost').setValue(tree.changedata.id);
 	form.field('namePost').focus();
 }
-var menutype = js.arraystr('0|普通,1|iframe连接,2|跳转');
+var menutype = js.arraystr('0|普通,1|iframe连接,2|跳转,3|iframe弹窗');
 function btn(bo){
 	try{
 	getcmp('edit_'+rand+'').setDisabled(bo);

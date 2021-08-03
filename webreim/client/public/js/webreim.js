@@ -1,4 +1,4 @@
-var connectbool = false,readfilebo = false,readfilebotime,righthistroboj,relianshotime_time,notifyobj,systemtitle;
+var connectbool = false,readfilebo = false,readfilebotime,righthistroboj,relianshotime_time,notifyobj,systemtitle,otherlogin=false;
 function initbody(){
 	var fces=js.getoption('adminface');
 	get('index_face').src=fces;
@@ -25,8 +25,10 @@ function initbody(){
 		sounderr:'public/sound/error.mp3',
 		soundbo:im.getsound()
 	});
+	nwjs.init();
 }
 function bodyunload(){
+	nwjs.removetray();
 	js.ajaxss('reimweb','loginexit');
 }
 function righthistorh(e){
@@ -51,6 +53,7 @@ function tabchagne(oi,o1){
 	$('#headercenter').find("div[tabdiv='"+oi+"']").show();
 }
 function connectserver(){
+	if(otherlogin)return;
 	if(isempt(fromrecid)||fromwshost.indexOf('ws:')!=0){
 		js.msg('msg','暂时无法使用<br>请先设置REIM服务器信息',-1);
 		return;
@@ -92,6 +95,7 @@ function connectserver(){
 	return false;
 }
 function linkbooschange(){
+	if(otherlogin)return;
 	if(!connectbool){
 		js.msg('msg','无法连接服务器2<br><span id="lianmiao"></span><a href="javascript:;" onclick="return connectserver()">[重连]</a>',-1);
 		relianshotime(30);
@@ -133,6 +137,7 @@ function connectcloseexit(bos){
 		connectbool=false;
 		js.setoption('appapikey','');
 		js.setoption('admintoken','');
+		js.setoption('autologin','');
 		js.location('login.html');
 	}
 }
@@ -150,16 +155,23 @@ var userarr = {},deptarr={},agentarr={},
 	grouparr= {},maindata;
 var im = {
 	wdarr:[],
+	wdtotal:0,
 	init:function(){
 		this.loadinit();
 		this.dingshilas();
 	},
 	dingshila:function(){
-		js.ajaxss('reimweb','dingshiup',function(a){});
+		js.ajaxss('reimweb','dingshiup',function(a){
+			im.showweidu(a.wdarr);
+		});
 		this.dingshilas();
 	},
 	dingshilas:function(){
 		setTimeout('im.dingshila()', 10*60*1000);
+	},
+	indexreload:function(){
+		connectbool=false;
+		location.reload();
 	},
 	loadinit:function(){
 		js.ajaxss('reimweb','loadinit',function(a){
@@ -169,7 +181,9 @@ var im = {
 			systemtitle=a.myrs.reimtitle;
 			get('index_face').src=adminface;
 			$('#index_name').html(adminname);
-			document.title = ''+systemtitle+'-'+adminname+'';
+			var tits = ''+systemtitle+'-'+adminname+'';
+			document.title = tits
+			nwjs.createtray(tits, 1);
 			fromwshost=jm.base64decode(a.myrs.fromwshost);
 			fromrecid=a.myrs.fromrecid;
 			connectserver();
@@ -236,6 +250,8 @@ var im = {
 		var inos = 0;
 		if(to>0)inos=1;
 		$('#tixingtotal').html(to);
+		nwjs.changeicon(to);
+		this.wdtotal = to;
 		if(this.showwemenu){
 			this.showwemenu.setData(d);
 			return;
@@ -351,10 +367,8 @@ var im = {
 		var bo = false,
 		winobj = 'windowuser'+uid+'',
 			a  = userarr[uid];
-		var url= 'user.html?uid='+uid+'&aid='+adminid+'&name='+jm.base64encode(a.name)+'&winobj='+winobj+'';	
-		url+='&mface='+jm.base64encode(adminface)+'&adminname='+jm.base64encode(adminname)+'&uface='+jm.base64encode(a.face)+'';
-		url+='&token='+admintoken+'';
-		js.open(url, 550,480, winobj);
+		var url= 'user.html?uid='+uid+'&aid='+adminid+'&winobj='+winobj+'&token='+admintoken+'';
+		js.open(url, 550,480, winobj,{},{title:a.name});
 		this.setwd('user', uid, 0);
 	},
 	opengroup:function(gid){
@@ -362,10 +376,8 @@ var im = {
 			a  = grouparr[gid],
 			na = a.name;
 		var winobj = 'windowgroup'+gid+'';
-		var url= 'group.html?gid='+gid+'&aid='+adminid+'&name='+jm.base64encode(a.name)+'&winobj='+winobj+'';	
-		url+='&mface='+jm.base64encode(adminface)+'&adminname='+jm.base64encode(adminname)+'&gface='+jm.base64encode(a.face)+'&gtype='+a.type+'';
-		url+='&token='+admintoken+'';
-		js.open(url, 550,480, winobj);
+		var url= 'group.html?gid='+gid+'&aid='+adminid+'&winobj='+winobj+'&token='+admintoken+'';
+		js.open(url, 550,480, winobj,{},{title:a.name});
 		this.setwd(types, gid, 0);
 	},
 	openagent:function(gid){
@@ -376,20 +388,16 @@ var im = {
 		}
 		var winobj = 'windowagent'+gid+'',url=a.url,lj='?',w=a.width,h=a.height;
 		if(url.indexOf('?')>0)lj='&';
-		url+=''+lj+'gid='+gid+'&aid='+adminid+'&name='+jm.base64encode(a.name)+'&winobj='+winobj+'';
-		url+='&mface='+jm.base64encode(adminface)+'&adminname='+jm.base64encode(adminname)+'&gface='+jm.base64encode(a.face)+'';
-		url+='&token='+admintoken+'';
+		url+=''+lj+'gid='+gid+'&aid='+adminid+'&winobj='+winobj+'&token='+admintoken+'';
 		if(h==0)h=480;
 		if(w==0)w=700;
-		js.open(url, w,h, winobj);
+		js.open(url, w,h, winobj,{},{title:a.name});
 	},
 	openagents:function(gid){
 		var a = agentarr[gid];
 		var winobj = 'windowagents'+gid+'';
-		var url='agent.html?gid='+gid+'&aid='+adminid+'&name='+jm.base64encode(a.name)+'&winobj='+winobj+'';
-		url+='&mface='+jm.base64encode(adminface)+'&adminname='+jm.base64encode(adminname)+'&gface='+jm.base64encode(a.face)+'';
-		url+='&token='+admintoken+'';
-		js.open(url, 400,450, winobj);
+		var url='agent.html?gid='+gid+'&aid='+adminid+'&winobj='+winobj+'&token='+admintoken+'';
+		js.open(url, 400,450, winobj,{},{title:a.name});
 		this.setwd('agent', gid, 0);
 	},
 	onoffline:function(uid, lx){
@@ -425,9 +433,32 @@ var im = {
 		}
 		return o2;
 	},
+	otherlogin:function(){
+		window.focus();
+		nwjs.winshow();
+		var msg='您的帐号已在别的地方登录';
+		notifyobj.showpopup(msg,{soundbo:false});
+		js.tanbody('close','系统提示',200,150,{
+			html:'<div style="padding:15px">'+msg+'</div>',btn:[{
+				text:'重新登录'
+			}],
+			closed:'none'
+		});
+		$('#close_btn0').click(function(){
+			connectcloseexit(true);
+		});
+		otherlogin=true;
+		setTimeout("js.msg('none')",100);
+		clearTimeout(relianshotime_time);
+	},
 	receivemesb:function(d){
 		var lx=d.type,sendid=d.adminid,num,ops=false,msg='';
+		if(lx=='offoline'){
+			this.otherlogin();
+			return;
+		}
 		var a 	= userarr[sendid];
+		if(!a)return;
 		d.sendname=a.name;
 		d.face = a.face;
 		if(lx=='onoffline'){
@@ -713,6 +744,10 @@ var im = {
 		var s='<div style="height:100px;">';
 		s+='<div style="padding:5px 0px;" id="indexsyscog_msg">'+this.indexsyscogs()+'</div>';
 		s+='<div style="padding:5px 0px;border-top:1px #eeeeee solid"><label><input '+chs+' onclick="im.setsound(this)" type="checkbox">新信息声音提示</label></div>';
+		if(nwjsgui){
+			var ver=nwjsgui.App.manifest.version;
+			s+='<div style="padding:5px 0px;border-top:1px #eeeeee solid">&nbsp;当前版本V'+ver+',<a href="javascript:;" onclick="nwjs.banben(this)">[检测版本]</a></div>';
+		}
 		s+='</div>';
 		js.tanbody('syscogshow','设置',220,160,{
 			html:s,
