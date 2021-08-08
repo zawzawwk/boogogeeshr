@@ -172,6 +172,8 @@ class reimClassModel extends Model
 		foreach($idrsa as $k=>$rs){
 			$ids.=','.$rs['gid'];
 		}
+		$facarr[0] = 'images/group.png';
+		$facarr[1] = 'images/taolun.png';
 		$rows 	= m('im_group')->getall("`id`>0 and ((`type`=2) or (`type` in(0,1) and `id` in($ids) ) ) order by `sort` ",'`type`,`name`,`id`,`face`,`sort`');
 		foreach($rows as $k=>$rs){
 			$rows[$k]['face'] = $this->getface($rs['face'], $facarr[$rs['type']]);
@@ -181,7 +183,7 @@ class reimClassModel extends Model
 	
 	private function getface($face, $mr='')
 	{
-		if($mr=='')$mr 	= 'images/im/user100.png';
+		if($mr=='')$mr 	= 'images/noface.jpg';
 		if(substr($face,0,4)!='http' && !$this->isempt($face))$face = URL.''.$face.'';
 		$face 			= $this->rock->repempt($face, $mr);
 		return $face;

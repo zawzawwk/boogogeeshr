@@ -22,12 +22,7 @@ class indexClassAction extends Action{
 		if(!$my)exit('sorry!');
 		$dept							= $this->db->getone('[Q]dept', $my['deptid']);
 		
-		$menu[] = array(
-			'id' 	=> 0,
-			'name' 	=> '个人常用菜单',
-			'icons' => 'computer'
-		);
-		
+
 		$this->smartydata['menu']		= json_encode($menu); 
 		$this->smartydata['my']			= $my;
 		$this->smartydata['admintype']	= $admintype;
@@ -56,7 +51,7 @@ class indexClassAction extends Action{
 	{
 		$pid				= (int)$this->get('pid');
 		$this->allmenuid	= $this->getsession('adminallmenuid');
-		if($pid == 0){
+		if($pid == 4){
 			$menu = $this->getmenuchang();
 		}else{
 			$where	= "`pid`='$pid'";
@@ -72,6 +67,10 @@ class indexClassAction extends Action{
 		foreach($menu as $k=>$rs){
 			$id	= $rs['id'];
 			$st = $rs['stotal'];
+			$children = false;
+			if($id==4){
+				$children=$this->getmenuchang();
+			}
 			$sd	= '['.$id.']';
 			$num= $rs['num'];
 			$rs['text'] = $rs['name'];
@@ -80,9 +79,10 @@ class indexClassAction extends Action{
 			$rs['leaf'] = true;
 			if(!$this->isempt($rs['icons']))$rs['icon']='mode/icons/'.$rs['icons'].'.png';
 			if($rs['isopen']==1)$rs['expanded'] = true;
-			if($st>0){
+			
+			if($st>0 || $children){
 				$rs['leaf'] 	= false;
-				$children		= $this->getmenu("`pid`='$id'");	
+				if(!$children)$children	= $this->getmenu("`pid`='$id'");	
 				$rs['children']	= $children;
 				if(count($children)<=0)$bo=false;
 			}else{
@@ -203,7 +203,22 @@ class indexClassAction extends Action{
 	}
 	
 	
-	
+	public function getqrcodeAjax()
+	{
+		$an  = m('log')->ismode(8);
+		if($an){
+			//$url = 'http://m.rockoa.com/login.html?url='.$this->jm->base64encode(URL).'';
+			$url = 'http://m.rockoa.com/login.html?url='.$this->jm->base64encode(URL).'&token='.$this->admintoken.'&user='.$this->jm->base64encode($this->adminuser).'';
+			$img = c('qrcode')->show($url);
+			$s = '<div >';
+			$s.='<img src="'.$img.'?'.time().'" width="130" height="130">';
+			$s.='</div>';
+			$s.='<div>直接扫一扫即可登录</div>';
+			echo $s;
+		}else{
+			echo '<div style="padding:10px" align="left">系统还未安装API无法使用手机版<br>请到【系统管理→辅助功能→模块安装升级】下安装</div>';
+		}
+	}
 	
 	
 	

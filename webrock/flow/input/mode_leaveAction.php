@@ -34,7 +34,9 @@ class mode_leaveClassAction extends inputAction{
 	{
 		$start	= $this->post('stime');
 		$end	= $this->post('etime');
-		$sj 	= ceil(m('kq')->getsbtime($start, $end));
+		//$sj 	= ceil(m('kq')->getsbtime($start, $end));
+		$date	= c('date', true);
+		$sj		= $date->datediff('H', $start, $end);
 		echo json_encode(array($sj, ''));
 	}
 	
@@ -58,6 +60,15 @@ class mode_leaveClassAction extends inputAction{
 		}
 		$arr['rows'] = $rows;
 		return $arr;
+	}
+	
+	public function getshengleval($fie, $mid)
+	{
+		$mdb = m('kaoqin');
+		$nj  = $mdb->getqjsytime($this->adminid,'年假');
+		$tx  = $mdb->getqjsytime($this->adminid,'调休');
+		$str = '剩余年假:'.$nj.'小时,可调休:'.$tx.'小时';
+		return $str;
 	}
 }	
 			

@@ -10,9 +10,9 @@ class demandflowClass extends flowChajian
 	}
 	
 	//保存对应审批人员
-	protected function flowcheckbefore($zt)
+	protected function flowcheckbefore($zt, $coursers)
 	{
-		if($zt==1){
+		if($zt==1 && $coursers['inputid']>0){
 			$jsid	= (int)$this->rock->jm->base64decode($this->rock->request('checkinput_changeuser_id','0'));
 			$jsname	= $this->rock->jm->base64decode($this->rock->request('checkinput_changeuser'));
 			$this->mdb->update(array(

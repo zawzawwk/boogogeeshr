@@ -38,7 +38,7 @@ class setClassAction extends Action
 		$msg	= '';
 		if($is==0){
 			if(!$this->isdemo){
-				$tables		= explode(',', 'file,assetm,assets,daily,dailyfx,docdeil,fininfom,fininfos,flow_bill,flow_log,flow_rule,hrpositive,hrredund,hrtransfer,im_group,im_groupuser,im_mess,im_messzt,im_history,infor,kq_anay,kq_dkerr,kq_dkjl,kq_info,kq_out,log,meet,menucom,projectm,projects,reads,schedule,supple,sjoinv,supplea,todo,userjl,vcard,word,work,workbg,reward,emailm,emails,carm,cars,careserve,editrecord,demand,flow_checks');
+				$tables		= explode(',', 'file,assetm,assets,daily,dailyfx,docdeil,fininfom,fininfos,flow_bill,flow_log,flow_rule,hrpositive,hrredund,hrtransfer,im_group,im_groupuser,im_mess,im_messzt,im_history,infor,kq_anay,kq_dkerr,kq_dkjl,kq_info,kq_out,log,meet,menucom,projectm,projects,reads,schedule,supple,sjoinv,supplea,todo,userjl,vcard,word,work,workbg,reward,emailm,emails,carm,cars,careserve,editrecord,demand,flow_checks,items');
 				$alltabls 	= $this->db->getalltable();
 				foreach($tables as $tabs){
 					$_tabs 	= ''.PREFIX.''.$tabs.'';

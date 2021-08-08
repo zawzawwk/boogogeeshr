@@ -1,5 +1,5 @@
 var addmentfus=function(){
-	addtabs('[新增]会议预定','flow,apply,meet,flownum=meet,tablename=meet,opentype=0,mid=0,gridid=');
+	openiframe('[新增]会议预定', 'meet',{icon:gicons('add')});
 };
 var panel={
 	xtype:'calendarpanel',textvalign:'top',

@@ -160,6 +160,7 @@ class homeClassAction extends Action
 				}
 			}
 		}
+		m('login')->uplastdt('pc', $this->admintoken);
 		echo json_encode(array(
 			'str' 	=> $str,
 			'msg' 	=> $str1,

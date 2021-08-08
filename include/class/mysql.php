@@ -101,7 +101,7 @@ abstract class mysql{
 		if($this->conn == null)$this->connect();
 		if($this->conn == null)exit('mysql user or pass error!');
 		$sql	= trim($sql);
-		$sql	= str_replace(array('[Q]', '[date]', '[now]'), array($this->perfix, date('Y-m-d'), date('Y-m-d H:i:s')), $sql);
+		$sql	= str_replace(array('[Q]','[q]', '[date]', '[now]'), array($this->perfix, $this->perfix, date('Y-m-d'), date('Y-m-d H:i:s')), $sql);
 		$this->countsql++;
 		$this->sqlarr[]	= $sql;
 		$this->nowsql	= $sql;
@@ -141,11 +141,24 @@ abstract class mysql{
 		$where	= $this->getwhere($where);
 		$table	= $this->gettable($table);
 		$sql	= "SELECT $fields FROM $table";
-		if($where!='')$sql.=" WHERE $where";
+		if($where!=''){
+			$where = $this->filterstr($where);
+			$sql.=" WHERE $where";
+		}
 		if($order!='')$sql.=" ORDER BY $order";
 		if($group!='')$sql.=" GROUP BY $group";
 		if($limit!='')$sql.=" LIMIT $limit";
 		return $sql;
+	}
+	
+	public function filterstr($str)
+	{
+		$str = strtolower($str);
+		$file= explode(', ','delete,drop,update,union,exec,insert,declare,master,truncate,create,alter,database');
+		$res = array();
+		foreach($file as $fid)$res[]='';
+		$str = str_replace($file, $res, $str);
+		return $str;
 	}
 	
 	public function getone($table,$where,$fields='*',$order='')
@@ -237,6 +250,7 @@ abstract class mysql{
 		if($sfh1!='')$joins = ') '.$sfh1.' (';
 		$where = join($joins, $arr);
 		if($sfh1!='')$where = "($where)";
+		
 		return $where;
 	}
 	private function _getwhere($where='')

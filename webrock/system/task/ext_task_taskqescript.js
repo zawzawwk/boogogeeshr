@@ -31,7 +31,7 @@ var panel= [{
 		var da = grid.store.getAt(oi)
 			a  = da.raw,
 			a1	= a.url.split(',');
-		var url = js.getajaxurl(a1[1], a1[0], 'taskrun', {mid:a.mid,sid:a.sid});
+		var url = js.getajaxurl(a1[1], a1[0]+'|atask', 'taskrun', {mid:a.mid,sid:a.sid});
 		js.msg('wait','运行中...');
 		$.get(url, function(da){
 			if(da=='success'){

@@ -7,7 +7,7 @@ function xiang(){
 }
 var reloafenxi = function(){
 	var month = getcmp('month_'+rand+'').getValue();
-	var url = js.getajaxurl('fenximonth','kaoqin','taskrun',{month:month});
+	var url = js.getajaxurl('fenximonth','kaoqin|atask','taskrun',{month:month});
 	js.msg('wait','分析中...');
 	$.get(url, function(da){
 		if(da=='success'){
@@ -20,7 +20,7 @@ var reloafenxi = function(){
 };
 var panel={
 	xtype:'rockgrid',tablename:'admin',searchtools:true,exceltitle:'考勤统计',defaultorder:'sort',
-	storeafteraction:'totalafter',url:publicstore(mode,dir),firstsearchbool:true,storefields:'deptname,id,`name`',
+	storeafteraction:'totalafter',storebeforeaction:'totalbefore',url:publicstore(mode,dir),firstsearchbool:true,
 	tbarcenter:[{
 		xtype:'rockdate',emptyText:'月份',value:js.now('Y-m'),editable:false,format:'month',width:90,id:'month_'+rand+''
 	},{

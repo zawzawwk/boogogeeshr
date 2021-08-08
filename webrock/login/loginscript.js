@@ -36,7 +36,12 @@ function loginsubmit(){
 	$.post(url,data,function(da){
 		if(da=='success'){
 			js.setmsg('登录成功,跳转中..','green');
-			location.href='?m=index';
+			var ltype=js.request('ltype');
+			if(ltype=='1'){
+				history.back();
+			}else{
+				location.href='?m=index';
+			}
 		}else{
 			js.setmsg(da,'red');
 			form('button').disabled=false;

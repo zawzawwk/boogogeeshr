@@ -18,7 +18,7 @@ class Action extends mainAction
 	public $adminid		= 0;
 	public $adminuser	= '';
 	public $adminname	= '';
-	public $adminstyle	= '';
+	public $admintoken	= '';
 	public $adminobj;
 	public $loadcount	= 0;
 	protected $ajaxbool 	= 'false';
@@ -29,6 +29,7 @@ class Action extends mainAction
 		$this->adminid		= (int)$this->getsession('adminid',0);
 		$this->adminuser	= $this->getsession('adminuser');
 		$this->adminname	= $this->getsession('adminname');
+		$this->admintoken	= $this->getsession('admintoken');
 		
 		$this->rock->adminid			= $this->adminid;
 		$this->rock->adminuser			= $this->adminuser;
@@ -55,12 +56,11 @@ class Action extends mainAction
 		$this->smartydata['adminid']	= $this->adminid;
 		$this->smartydata['adminuser']	= $this->adminuser;
 		$this->smartydata['adminname']	= $this->adminname;
-		$this->smartydata['adminstyle']	= $this->adminstyle;
 	}
 	
 	private function iszclogin()
 	{
-		$token = $this->getsession('admintoken');
+		$token = $this->admintoken;
 		if($this->isempt($token))exit('sorry1');
 		$lastt = date('Y-m-d H:i:s',time()-24*3600);
 		$rs = m('logintoken')->getone("`uid`='$this->adminid' and `token`='$token' and `cfrom`='pc' and `moddt`>='$lastt'",'`moddt`');
@@ -89,6 +89,7 @@ class Action extends mainAction
 		
 		
 		$wherea	  .= " $where $keywhere";
+		$wherea	   = $this->db->filterstr($wherea);
 		$order	   = $this->getOrder($order);
 		$group	   = '';
 		if(isset($arr['group']))$group=" group by ".$arr['group']." ";
@@ -138,6 +139,17 @@ class Action extends mainAction
 		if($order != '')$order=" order by $order ";
 		return $order;
 	}
+	
+	public function deljoinrecord($table, $id)
+	{
+		$where = "`table`='$table' and `mid` in($id)";
+		m('flow_log')->delete($where);
+		m('flow_rule')->delete($where);
+		m('flow_checks')->delete($where);
+		m('items')->delete($where);
+		m('reads')->delete($where);
+		m('file')->delfiles($table, $id);
+	}
 
 	public function publicdelAjax()
 	{
@@ -158,10 +170,17 @@ class Action extends mainAction
 			}
 		}
 		if($msg==''){
+			$delrows = array();
+			if($table=='flow_bill')$delrows=$db->getall("`id` in($id)",'`table`,`mid`');
 			if(!$db->delete("`id` in($id)")){
 				$msg= $this->db->error();
 			}else{
-				m('file')->delfiles($table, $id);
+				$this->deljoinrecord($table, $id);
+			}
+			if($delrows)foreach($delrows as $k=>$rs){
+				$_mid=(int)$rs['mid'];
+				m($rs['table'])->delete("`id`='$_mid'");
+				$this->deljoinrecord($rs['table'], $_mid);
 			}
 		}
 		if($msg==''){
@@ -186,7 +205,7 @@ class Action extends mainAction
 		$aftera		= $this->post('storeafteraction', 'publicstoreAfter');
 		$execldown	= $this->post('execldown');
 		$this->loadcount	= (int)$this->request('loadcount', 0)+1;
-		
+		$fields		= str_replace(array('\'',' ','(',')','"'),array('','','','',''), $fields);
 		$where		= '1=1 ';
 		$beforea	= $this->request('storebeforeaction', 'publicstoreBefore');
 		$tables 	= $this->T($table);
@@ -239,7 +258,7 @@ class Action extends mainAction
 		$tables 	= $this->rock->strformat('?0 a left join ?1 b on a.uid=b.id', $this->T($table), $this->T('admin'));
 		$where		= 'a.`status`<>5';
 		$uid 		= $this->adminid;
-		
+		$fields		= str_replace(array('\'',' ','(',')','"'),array('','','','',''), $fields);
 		if($fields=='*')$fields='a.*,b.deptid,b.deptname,b.name';
 		
 		if($opentype == 0){

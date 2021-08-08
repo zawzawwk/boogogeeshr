@@ -225,4 +225,11 @@ class flowlogClassModel extends Model
 		return $mode;
 	}
 	
+	/*
+	*	是否有权限查看数据
+	*/
+	public function isview($num, $mid)
+	{
+		
+	}
 }

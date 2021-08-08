@@ -264,6 +264,14 @@ function createindex(){
 		var t=(screen.height-560)*0.5;
 		js.open('webreim/client/login.html?adminuser='+adminuser+'&token='+admintoken+'&murl='+jm.base64encode(URL)+'',270,520,'',{left:''+l+'px',top:''+t+'px'});
 	}
+	function loginmobiles(){
+		js.tanbody('loginmobile','登录手机版', 300,200,{
+			html:'<div id="loginmobile_div" style="height:160px;padding:5px" align="center"><div style="padding-top:20px"><img align="absmiddle" src="images/mloading.gif">加载中...</div></div>'
+		});
+		js.ajax(js.getajaxurl('getqrcode','index'),{}, function(str){
+			$('#loginmobile_div').html(str);
+		});
+	}
 	function showmenula(nobj, reb){
 		menuTree = nobj.down('treepanel');
 		if(!nobj.loadbool || reb){
@@ -362,7 +370,9 @@ function createindex(){
 			id:'index_bottom',region:'south',xtype:'toolbar',
 			items:[{
 				icon:gicons('user'),text:'用户：'+adminuser+'',showSeparator:false
-			},'-','登录次数:'+adminloginci+'','->','基于<a href="http://www.rockoa.com" target="_blank" class="a">RockOA</a>版本：V'+VERSION+'','-','<a href="http://www.rockoa.com/mobile.shtml" target="_blank" class="a">手机版</a>','-',{
+			},'-','登录次数:'+adminloginci+'','->','基于<a href="http://www.rockoa.com" target="_blank" class="a">RockOA</a>版本：V'+VERSION+'','-',{
+				text:'登录手机版',icon:gicons('shouji'),handler:loginmobiles
+			},'-',{
 				text:'交流',icon:gicons('comment'),handler:commentopen
 			},'-',{
 				text:'重新加载',icon:gicons('arrow_refresh'),handler:benreload
@@ -431,8 +441,6 @@ function createindex(){
 			name:'刷新',icons:gicons('arrow_refresh'),url:'return location.reload();'
 		},{
 			name:'帮助',icons:gicons('help'),url:'http://www.rockoa.com/help.html',attr:'target="_blank"'
-		},{
-			name:'手机版',icons:gicons('shouji'),url:'http://www.rockoa.com/mobile.shtml',attr:'target="_blank"'
 		},{
 			name:'退出',icons:gicons('report_go'),url:'?m=login&a=exit'
 		}];

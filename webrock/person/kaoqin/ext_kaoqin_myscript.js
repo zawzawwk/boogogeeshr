@@ -26,7 +26,7 @@ function getnrshow(a){
 
 function fenxila(){
 	js.msg('wait','分析中...');
-	$.post(js.getajaxurl('fenxi','kaoqin','taskrun'),{uid:uid,startdt:''+year+'-'+month+'-01',enddt:enddt}, function(da){
+	$.post(js.getajaxurl('fenxi','kaoqin|atask','taskrun'),{uid:uid,startdt:''+year+'-'+month+'-01',enddt:enddt}, function(da){
 		if(da=='success'){
 			getnr(year, month );
 		}else{

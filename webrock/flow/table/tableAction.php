@@ -81,7 +81,7 @@ class tableClassAction extends Action
 		if(!$rs)exit('sorry!');
 		$this->smartydata['rs'] = $rs;
 		$this->title  = $rs['name'].'_录入页面设置';
-		$fleftarr 	= m('flow_element')->getrows("`mid`='$setid' and `islu`=1",'*','`iszb`,`sort`');
+		$fleftarr 	= m('flow_element')->getrows("`mid`='$setid'",'*','`iszb`,`sort`');
 		$modenum	= $rs['num'];
 		$fleft[]= array('base_name', '申请人',0);
 		$fleft[]= array('base_deptname', '申请部门',0);

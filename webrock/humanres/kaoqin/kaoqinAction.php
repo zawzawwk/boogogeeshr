@@ -97,7 +97,16 @@ class kaoqinClassAction extends Action
 		return array('rows' => $rows);
 	}
 	
-
+	public function totalbefore($table)
+	{
+		$month	= $this->post('month', date('Y-m'));
+		$dt 	= $month.'-01';
+		$where 	= " and ((`state`<>5) or (`state`=5 and `quitdt`>'$dt'))";
+		return array(
+			'where' => $where,
+			'fields'=> '`deptname`,id,`name`'
+		);
+	}
 	
 	//考勤统计
 	public function totalafter($table, $rows)

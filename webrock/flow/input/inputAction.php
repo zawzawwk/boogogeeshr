@@ -11,8 +11,7 @@ class inputAction extends Action
 	
 	//保存后处理，主要用于判断是否可以保存
 	protected function saveafter($table,$arr, $id, $addbo){}
-	
-	
+
 
 	public function saveAjax()
 	{
@@ -25,7 +24,7 @@ class inputAction extends Action
 		$flownum		= $this->moders['num'];
 		$table			= $this->moders['table'];
 		if($this->isempt($table))$this->backmsg('模块未设置表名');
-		$fieldsarr		= m('flow_element')->getrows("`mid`='$modeid' and `islu`=1 and `iszb`=0",'`name`,`fields`,`isbt`','`sort`');
+		$fieldsarr		= m('flow_element')->getrows("`mid`='$modeid' and `islu`=1 and `iszb`=0",'`name`,`fields`,`isbt`,`fieldstype`,`data`','`sort`');
 		if(!$fieldsarr)$this->backmsg('没有录入元素');
 		$db	   = m($table);
 		$addbo = false;
@@ -44,17 +43,27 @@ class inputAction extends Action
 				if(!$bos)$this->backmsg('不允许编辑,可能已审核通过/不是你的单据');
 			}
 		}
-		$uaarr = array();
-		$farrs = array();
+		$uaarr = $farrs = array();
 		foreach($fieldsarr as $k=>$rs){
 			$fid = $rs['fields'];
 			$val = $this->post($fid);
 			if($rs['isbt']==1&&$this->isempt($val))$this->backmsg(''.$rs['name'].'不能为空');
 			$uaarr[$fid] = $val;
-			$farrs[$fid] = array(
-				'name' => $rs['name']
-			);	
+			$farrs[$fid] = array('name' => $rs['name']);
 		}
+		foreach($fieldsarr as $k=>$rs){
+			if(substr($rs['fieldstype'],0,6)=='change'){
+				if(!$this->isempt($rs['data'])){
+					$fid = $rs['data'];
+					if(isset($uaarr[$fid]))continue;
+					$val = $this->post($fid);
+					if($rs['isbt']==1&&$this->isempt($val))$this->backmsg(''.$rs['name'].'id不能为空');
+					$uaarr[$fid] = $val;
+					$farrs[$fid] = array('name' => $rs['name'].'id');
+				}
+			}
+		}
+		
 		
 		$allfields = $this->db->getallfields('[Q]'.$table.'');
 		if(in_array('optdt', $allfields))$uaarr['optdt'] = $this->now;
@@ -165,6 +174,7 @@ class inputAction extends Action
 		$num		= $this->jm->gettoken('num');
 		$gridid		= $this->get('gridid');
 		$mid		= (int)$this->jm->gettoken('mid');
+		$this->mid  = $mid;
 		$moders 	= m('flow_set')->getone("`num`='$num'",'`id`,`num`,`name`,`table`');
 		if(!$moders)exit('流程不存在!');
 		$this->smartydata['moders']	= $moders;
@@ -225,11 +235,13 @@ class inputAction extends Action
 		}
 		preg_match_all('/\[(.*?)\]/', $content, $list);
 		foreach($list[1] as $k=>$nrs){
-			$fida= explode(',', $nrs);$xu0='0';
-			if(isset($fida[1]))$xu0=$fida[1];
-			
-			$str		= $this->getfieldcont($fida[0], $this->actclss,'_'.$xu0.'');
-			$content	= str_replace('['.$nrs.']', $str, $content);
+			if(!$this->isempt($nrs)){
+				$fida= explode(',', $nrs);$xu0='0';
+				if(isset($fida[1]))$xu0=$fida[1];
+				
+				$str		= $this->getfieldcont($fida[0], $this->actclss,'_'.$xu0.'');
+				$content	= str_replace('['.$nrs.']', $str, $content);
+			}
 		}
 		return $content;
 	}
@@ -281,7 +293,7 @@ class inputAction extends Action
 				if(!$this->isempt($datanum)){
 					$fopt	= array();
 					if(method_exists($objs, $datanum)){
-						$fopt	= $objs->$datanum($fid);
+						$fopt	= $objs->$datanum($fid,$this->mid);
 						foreach($fopt as $k=>$rs){
 							$sel = ($rs['value']==$val)?'selected':'';
 							$str.='<option value="'.$rs['value'].'" '.$sel.'>'.$rs['name'].'</option>';
@@ -341,7 +353,15 @@ class inputAction extends Action
 				if($val=='1'||$val=='true')$chk='checked';
 				$str = '<input name="'.$fname.'" '.$chk.' '.$attr.' type="checkbox" value="1"> ';
 			}
-			
+			//自定义
+			if($type=='auto'){
+				$datanum = $data;
+				if(!$this->isempt($datanum)){
+					if(method_exists($objs, $datanum)){
+						$str = $objs->$datanum($fid, $this->mid);
+					}
+				}
+			}
 		}
 		return $str;
 	}

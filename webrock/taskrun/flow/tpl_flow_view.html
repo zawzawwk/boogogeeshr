@@ -53,16 +53,29 @@ function _getaolvw(na){
 var backnana;
 function getuserla(na){
 	backnana=na;
-	js.open(js.getajaxurl('$change','dept','system',{changetype:'changeuser',callback:'backusercane'}),500,400);
+	//js.open(js.getajaxurl('$change','dept','system',{changetype:'changeuser',callback:'backusercane'}),500,400);
+	//return false;
+	
+	var h = winHb()-70;
+	if(h>400)h=400;
+	js.tanbody('changeaction','请选择...',500,h,{
+		html:'<div style="height:'+h+'px"><iframe src="" name="winiframe" width="100%" height="100%" frameborder="0"></iframe></div>',
+		bbar:'none'
+	});
+	var url = js.getajaxurl('$change','dept','system',{changetype:'changeuser',callback:'backusercane'});
+	winiframe.location.href=url;
 	return false;
+	
 }
 function clearxuan(na){
 	form(na).value='';
 	form(na+'_id').value='';
+	form(backnana).focus();
 }
 function backusercane(na,naid){
 	form(backnana).value=na;
 	form(backnana+'_id').value=naid;
+	form(backnana).focus();
 }
 function connectclose(){
 	try{
@@ -76,6 +89,9 @@ function backreturn(){
 	var sid = js.request('gridid'),nonum='';try{nonum=opener.nowtab.num}catch(e){};
 	if(sid){var o1 = opener.getcmp(sid);if(o1){o1.setReload(true);if(nonum==o1.itemId){o1.storereload();}}};
 	}catch(e){}
+}
+function closechangeuser(){
+	js.tanclose('changeaction');
 }
 function openupload(){
 	js.upload('',{showid:'fileidview'});
@@ -136,7 +152,7 @@ function submitother(nae,zt,las, smlx){
 <div align="center">
 
 <div id="printdiv" style="position:fixed;left:2px;top:2px;z-index:4" align="left">
-	<button class="webbtn" type="button" onclick="openprint()"><img src="images/print.png"> 进入打印页面</button>&nbsp; 
+	<button class="webbtn" type="button" onclick="openprint()"><img src="images/print.png"> 打印</button>&nbsp; 
 	<button class="webbtn" type="button" onclick="connectclose()">关闭</button>
 </div>
 

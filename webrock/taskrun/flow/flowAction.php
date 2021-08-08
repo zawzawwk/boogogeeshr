@@ -3,11 +3,23 @@ if(!defined('HOST'))exit('not access');
 
 class flowClassAction extends ActionNot{
 	
+	public function initAction()
+	{
+		if($this->adminid==0){
+			if(isajax()){
+				$this->backmsg('not sign');
+			}else{
+				echo '<script>location.href="?m=login&ltype=1"</script>';
+			}
+			exit();
+		}
+	}
+	
 	public function checkAjax()
 	{
 		$flownum	= $this->post('flownum');
 		$id			= (int)$this->post('id');
-		$cid		= (int)$this->post('cid');
+		$cid		= $this->adminid;
 		$zt			= (int)$this->post('zt');
 		$courseid	= (int)$this->post('courseid');
 		$checkid	= $this->post('nextcheckid');
@@ -27,7 +39,8 @@ class flowClassAction extends ActionNot{
 	{
 		$flownum	= $this->post('flownum');
 		$id			= (int)$this->post('id');
-		$cid		= (int)$this->post('cid');
+		//$cid		= (int)$this->post('cid');
+		$cid		= $this->adminid;
 		$name		= $this->post('name');
 		$zt			= $this->post('zt');
 		if($zt=='')$zt=$name;
@@ -47,7 +60,8 @@ class flowClassAction extends ActionNot{
 	public function viewAction()
 	{
 		$this->tpltype = 'html';
-		$uid		= $this->jm->gettoken('uid');
+		
+		$uid		= $this->adminid;
 		$modenum	= $this->jm->gettoken('modenum');
 		$table		= $this->jm->gettoken('table');
 		$notitle	= $this->jm->gettoken('notitle');
@@ -88,6 +102,7 @@ class flowClassAction extends ActionNot{
 	{
 		$this->tpltype = 'html';
 		$uid		= $this->jm->gettoken('uid');
+		$uid		= $this->adminid;
 		$modenum	= $this->jm->gettoken('modenum');
 		$table		= $this->jm->gettoken('table');
 		$mid		= (int)$this->jm->gettoken('mid');

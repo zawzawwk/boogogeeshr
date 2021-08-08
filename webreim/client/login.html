@@ -38,7 +38,7 @@ function initbody(){
 	var adoid=js.getoption('autologin');
 	if(adoid=='1')get('checkautologin').checked=true;
 	nwjs.createtray('REIM即时通', 0);
-	if(temp_token.length==32){
+	if(temp_token.length>=8){
 		loginsubmit(0);
 	}else{
 		if(adoid=='1'&&opas!='')loginsubmit(1);

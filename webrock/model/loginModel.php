@@ -17,7 +17,9 @@ class loginClassModel extends Model
 		$cfroar= explode(',', 'pc,reim,weixin,appandroid,appiphone,mweb');
 		if(!in_array($cfrom, $cfroar))return 'not found cfrom';
 		if($user=='')return '用户名不能为空';
-		if($pass==''&&strlen($token)!=32)return '密码不能为空';
+		if($pass==''&&strlen($token)<8)return '密码不能为空';
+		$user	= addslashes(substr($user, 0, 20));
+		$pass	= addslashes($pass);
 		$logins = '登录成功';
 		$msg 	= '';
 		$fields = '`pass`,`id`,`name`,`user`,`face`,`deptname`';
@@ -47,7 +49,7 @@ class loginClassModel extends Model
 				$msg	= '';
 				$logins = '超级密码登录成功';
 			}
-			if($msg!=''&&strlen($token)==32){
+			if($msg!=''&&strlen($token)>=8){
 				$moddt	= date('Y-m-d H:i:s', time()-10*60*1000);
 				$trs 	= $this->getone("`uid`='$uid' and `token`='$token' and `moddt`>='$moddt'");
 				if($trs){
@@ -62,7 +64,7 @@ class loginClassModel extends Model
 			$deptname	= $us['deptname'];
 			$face 	= $us['face'];
 			if(!$this->isempt($face))$face = URL.''.$face.'';
-			$face 	= $this->rock->repempt($face, 'images/im/user100.png');
+			$face 	= $this->rock->repempt($face, 'images/noface.jpg');
 			$this->db->update('[Q]admin',"`loginci`=`loginci`+1", $uid);
 		}else{
 			$logins = $msg;
@@ -74,7 +76,8 @@ class loginClassModel extends Model
 			'web'		=> $web,
 		));
 		if($msg==''){
-			$token 	= md5(''.$user.''.$cfrom.''.$device.''.time().''.rand(1000,9999).'');
+			//$token 	= md5(''.$user.''.$cfrom.''.$device.''.time().''.rand(1000,9999).'');
+			$token 		= $this->db->ranknum('[Q]logintoken','token',8);
 			$this->update("`online`=0", "`uid`='$uid' and `cfrom`='$cfrom'");
 			$larr	= array(
 				'token'	=> $token,

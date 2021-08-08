@@ -38,7 +38,7 @@ ul,li,a{ list-style-type:none}
 .h1{ font-size:24px;font-weight:bold;}
 .h2{ font-size:20px;font-weight:bold;}
 
-
+.title{height:40px;line-height:40px;overflow:hidden;font-size:18px;text-align:left;border-bottom:1px #cccccc solid;color:#55555;font-weight:bold; background-color:#0887CC}
 
 .inputs{height:28px; line-height:24px; border:1px #cccccc solid;padding:0px 2px; overflow:hidden;}
 input.checkbox,input.radio{ border:none;padding:0;margin-right:5px; width:16px; height:16px}

@@ -63,6 +63,9 @@ class applyClassAction extends Action
 		if($protype ==3){
 			$s = m('flowlog')->getextview($this->adminid,$modenum, 'a.');
 		}
+		if($protype ==4){
+			$s = '';
+		}
 		if($modeid >0)$s.=' and a.`modeid`='.$modeid.'';
 		$s.=' and a.`isdel`=0';
 		return array(
@@ -135,6 +138,8 @@ class applyClassAction extends Action
 					$where = " and instr('$snum', concat(',',`num`,','))>0";
 				}
 			}
+			if($protype == 4){
+			}
 			$mrss = m('flow_set')->getall("isflow=1 $where $recewh order by `sort`", '`id`,`num`,`name`,`table`,`type`');
 			foreach($mrss as $k=>$rs){
 				$rs['leaf'] = true;
@@ -159,6 +164,4 @@ class applyClassAction extends Action
 		}
 		return array('rows'=>$rows, 'modearr'=>$carr);
 	}
-	
-	
 }

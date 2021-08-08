@@ -38,7 +38,7 @@ final class rockClass
 		$this->unarr	= explode(',','1,2');
 		$this->now		= $this->now();
 		$this->date		= date('Y-m-d');
-		$this->lvlaras  = explode(',','select ,alter table,delete ,drop ,update ,insert into');
+		$this->lvlaras  = explode(',','select ,alter table,delete ,drop ,update ,insert into,load_file,outfile');
 	}
 	
 	public function initRock()
@@ -101,7 +101,7 @@ final class rockClass
 		if($lx==2)$s=str_replace(array('{','}'), array('[H1]','[H2]'), $s);
 		$str = strtolower($s);
 		foreach($this->lvlaras as $v1)if($this->contain($str, $v1)){
-			if(DEBUG)$this->debug(''.$na.'《'.$s.'》error:包含非法字符《'.$v1.'》','params');
+			$this->debug(''.$na.'《'.$s.'》error:包含非法字符《'.$v1.'》','params');
 			$s = str_replace($v1,'', $str);
 			//exit(''.$na.' invalid params');
 		}
@@ -110,6 +110,7 @@ final class rockClass
 	
 	public function debug($txt, $lx)
 	{
+		if(!DEBUG)return;
 		$_dt 	= date('Y-m');
 		$fdir	= ''.ROOT_PATH.'/upload/'.$_dt.'';
 		if(!file_exists($fdir))mkdir($fdir);

@@ -42,7 +42,7 @@ class flowChajian extends Chajian{
 	protected function flowcheckname($num){return '';}
 	protected function flowsubmit($lx){}
 	protected function flowcheckjudge(){}
-	protected function flowcheckbefore($zt){}
+	protected function flowcheckbefore($zt,$nrs){}
 	protected function flownothrough(){}
 	protected function flowthrough($sm){}
 	protected function contentother(){}
@@ -181,12 +181,8 @@ class flowChajian extends Chajian{
 	private function getcheckname($crs)
 	{
 		$type	= $crs['checktype'];
-		
 		$cuid 	= $name = '';
-		$uarr	= $this->flowcheckname($crs['num']);
-		if(is_array($uarr)){
-			if(!$this->isempt($uarr[0]))return $uarr;
-		}
+		
 		$_ches	= $this->db->getone('[Q]flow_checks',"$this->where and `courseid`='".$crs['id']."'",'checkid,checkname');
 		if($_ches){
 			$cuid = $_ches['checkid'];
@@ -194,6 +190,11 @@ class flowChajian extends Chajian{
 			if(!$this->isempt($cuid))return array($cuid, $name);
 		}
 		
+		$uarr	= $this->flowcheckname($crs['num']);
+		if(is_array($uarr)){
+			if(!$this->isempt($uarr[0]))return $uarr;
+		}
+
 		if($type=='super'){
 			$cuid = $this->urs['superid'];
 			$name = $this->urs['superman'];
@@ -814,7 +815,6 @@ class flowChajian extends Chajian{
 			return $msg;
 		}
 		$msg	= '处理成功';
-		$this->flowcheckbefore($zt);
 		$nextcourseid		= (int)$arr['nextcourseid'];
 		$nowcourseid		= $arr['nowcourseid'];
 		$this->nowcoursers	= $this->dbcourse->getone("`id`='$nowcourseid'");
@@ -823,7 +823,7 @@ class flowChajian extends Chajian{
 		$ztname				= '';
 		$isend				= 0;
 		$ztnamearr			= array('','通过','不通过');
-		
+		$this->flowcheckbefore($zt, $nowcoursers);
 		$_shcnarr			= m('flow_courseact')->getone("`cid`='$nowcourseid' and `actv`='$zt'");
 		$color 				= '';
 		if(!$_shcnarr){
@@ -1048,7 +1048,7 @@ class flowChajian extends Chajian{
 				$newcstr.='|'.$newcid[$i].'';
 				$newustr.='|'.$newuid[$i].'';
 			}
-			if($oldcstr != $newcstr || $oldustr != $newustr){
+			if($oldcstr != $newcstr || $oldustr != $newustr || $olda['alluser'] != $newa['alluser']){
 				$this->ruleupdate($newa);
 				$leas	= '【'.$olda['alluser'].'：'.$olda['alluserid'].'】→【'.$newa['alluser'].'：'.$newa['alluserid'].'】;';
 				$lea	= 1;
