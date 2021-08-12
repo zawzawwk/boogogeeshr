@@ -60,13 +60,22 @@ function submitla(){
 	a.url = url.substr(0, url.lastIndexOf('/')+1);
 	js.setmsg('处理中...');
 	bool = true;
-	$.post(js.getajaxurl('save','install'), a, function(da){
-		js.setmsg();
-		if(da!='success'){
-			js.setmsg(da);
+	$.ajax({
+		url:js.getajaxurl('save','install'),
+		type:'post',
+		data:a,
+		success:function(da){
+			js.setmsg();
+			if(da!='success'){
+				js.setmsg(da);
+				bool = false;
+			}else{
+				wancla();
+			}
+		},
+		error:function(){
+			js.setmsg('系统内部错误，F12查看调试');
 			bool = false;
-		}else{
-			wancla();
 		}
 	});
 }
